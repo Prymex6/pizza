@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Dish;
+use App\Models\Category;
 use App\Http\Requests\DishRequest;
 
 class DishController extends Controller
@@ -12,7 +13,7 @@ class DishController extends Controller
      */
     public function index()
     {
-        $dishes = Dish::paginate(2);
+        $dishes = Dish::with('category')->paginate(2);
 
         return view('dish.index', ['dishes' => $dishes]);
     }
@@ -22,7 +23,9 @@ class DishController extends Controller
      */
     public function create()
     {
-        return view('dish.create');
+        $categories = Category::all();
+
+        return view('dish.create', ['categories' => $categories]);
     }
 
     /**
@@ -30,18 +33,7 @@ class DishController extends Controller
      */
     public function store(DishRequest $request)
     {
-        // $dish = new Dish();
-        // $dish->name = $request->name;
-        // $dish->description = $request->description;
-        // $dish->ingredients = implode(',', $request->ingredients);
-        // $dish->price = $request->price;
-        // $dish->image = $request->image;
-
-
-        // $dish->save();
-
         $request->merge(['ingredients' => implode(',', array_filter($request->ingredients))]);
-        // $request->ingredients 
 
         Dish::create($request->all());
 
@@ -58,9 +50,11 @@ class DishController extends Controller
      */
     public function edit(Dish $dish)
     {
+        $categories = Category::all();
+
         $dish->ingredients = explode(',', $dish->ingredients);
 
-        return view('dish.edit', ['dish' => $dish]);
+        return view('dish.edit', ['dish' => $dish, 'categories' => $categories]);
     }
 
     /**

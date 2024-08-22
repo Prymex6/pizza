@@ -94,6 +94,15 @@
                                             </div>
                                         </div>
                                         <div class="form-group">
+                                            <label for="category_id">Wybierz kategorie</label>
+                                            <!-- <textarea class="form-control" id="category" placeholder="Wpisz opis" name="description"></textarea> -->
+                                            <select class="form-control" name="category_id">
+                                                @foreach ($categories as $category)
+                                                <option value="{{ $category->id }}" {{ $dish->category_id == $category->id ? ' selected' : '' }}>{{ $category->name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
                                             <label for="price">Wpisz cene</label>
                                             <input type="number" class="form-control" id="price" placeholder="Wpisz cene" name="price" value="{{ $dish->price }}">
                                         </div>

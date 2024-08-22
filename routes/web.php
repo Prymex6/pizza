@@ -3,15 +3,17 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\DishController;
+use App\Http\Controllers\CategoryController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
-});
+})->name('welcome');
 
 Route::prefix('/dashboard')->group(function () {
     Route::get('/order', [OrderController::class, 'index'])->name('order.index');
     Route::resource('dish', DishController::class);
+    Route::resource('category', CategoryController::class);
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
@@ -20,4 +22,4 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

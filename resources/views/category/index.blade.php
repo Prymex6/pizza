@@ -4,12 +4,12 @@
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1 class="m-0">Dania</h1>
+                <h1 class="m-0">Kategorie</h1>
             </div>
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
                     <li class="breadcrumb-item"><a href="#">Home</a></li>
-                    <li class="breadcrumb-item active">Dania</li>
+                    <li class="breadcrumb-item active">Kategorie</li>
                 </ol>
             </div>
         </div>
@@ -24,7 +24,7 @@
                         <div class="row">
                             <div class="col-sm-11"></div>
                             <div class="col-sm-1">
-                                <a href="{{ route('dish.create') }}" class="btn btn-block btn-success">Dodaj</a>
+                                <a href="{{ route('category.create') }}" class="btn btn-block btn-success">Dodaj</a>
                             </div>
                         </div>
                     </div>
@@ -41,27 +41,20 @@
                                             <tr>
                                                 <th>#</th>
                                                 <th>Nazwa</th>
-                                                <th>Opis</th>
-                                                <th>Składniki</th>
-                                                <th>Kategoria</th>
-                                                <th>Cena</th>
                                                 <th>Akcja</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach ($dishes ?? [] as $dish)
+                                            @foreach ($categories ?? [] as $category)
                                             <tr class="{{ $loop->index / 2 == 0 ? 'odd' : 'even' }}">
-                                                <td>{{ ($dishes->currentPage() - 1) * $dishes->count() + $loop->iteration }}</td>
-                                                <td>{{ $dish->name }}</td>
-                                                <td>{{ $dish->description }}</td>
-                                                <td>{{ $dish->ingredients }}</td>
-                                                <td>{{ $dish->category->name }}</td>
-                                                <td>{{ $dish->price }} zł</td>
+                                                <td>{{ ($categories->currentPage() - 1) * $category->count() + $loop->iteration }}
+                                                </td>
+                                                <td>{{ $category->name }}</td>
                                                 <td>
-                                                    <form action="{{ route('dish.destroy', $dish->id) }}" method="POST" onsubmit="return confirm('Czy na pewno chcesz usunąć ten rekord?');">
+                                                    <form action="{{ route('category.destroy', $category->id) }}" method="POST" onsubmit="return confirm('Czy na pewno chcesz usunąć ten rekord?');">
                                                         @csrf
                                                         @method('DELETE')
-                                                        <a href="{{ route('dish.edit', $dish->id) }}" class="btn btn-sm btn-primary"><i class="fa fa-edit"></i></a>
+                                                        <a href="{{ route('category.edit', $category->id) }}" class="btn btn-sm btn-primary"><i class="fa fa-edit"></i></a>
                                                         <button type="submit" class="btn btn-sm btn-danger"><i class="fa fa-remove"></i></button>
                                                     </form>
                                                 </td>
@@ -72,7 +65,7 @@
                                 </div>
                             </div>
                         </div>
-                        {{ $dishes->links('vendor.pagination.bootstrap-5') }}
+                        {{ $categories->links('vendor.pagination.bootstrap-5') }}
                     </div>
 
                 </div>
