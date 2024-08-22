@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Dish;
 use App\Http\Requests\DishRequest;
-use Illuminate\Http\Request;
 
 class DishController extends Controller
 {
@@ -38,12 +37,12 @@ class DishController extends Controller
         // $dish->price = $request->price;
         // $dish->image = $request->image;
 
-        
+
         // $dish->save();
-        
-        $request->merge(['ingredients' => implode(',', $request->ingredients)]); 
+
+        $request->merge(['ingredients' => implode(',', array_filter($request->ingredients))]);
         // $request->ingredients 
-        
+
         Dish::create($request->all());
 
         return redirect()->route('dish.index');
@@ -52,25 +51,28 @@ class DishController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Dish $dish)
-    {
-        //
-    }
+    public function show(Dish $dish) {}
 
     /**
      * Show the form for editing the specified resource.
      */
     public function edit(Dish $dish)
     {
-        //
+        $dish->ingredients = explode(',', $dish->ingredients);
+
+        return view('dish.edit', ['dish' => $dish]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Dish $dish)
+    public function update(DishRequest $request, Dish $dish)
     {
-        //
+        $request->merge(['ingredients' => implode(',', array_filter($request->ingredients))]);
+
+        $dish->update($request->all());
+
+        return redirect()->route('dish.index');
     }
 
     /**
@@ -78,6 +80,8 @@ class DishController extends Controller
      */
     public function destroy(Dish $dish)
     {
-        //
+        $dish->delete();
+
+        return redirect()->route('dish.index');
     }
 }
