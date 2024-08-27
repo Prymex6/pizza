@@ -1,799 +1,470 @@
 @extends('layouts.default')
 
+@section('style')
+<style>
+    .stars-rate {
+        color: #ffd700;
+    }
+</style>
+@endsection
 @section('content')
-<nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light" id="ftco-navbar">
+<div class="hero_area">
+    <div class="bg-box">
+        <img src="images/hero-bg.jpg" alt="">
+    </div>
+    <!-- header section strats -->
+    <header class="header_section">
+        <div class="container">
+            <nav class="navbar navbar-expand-lg custom_nav-container ">
+                @if (setting('general.name'))
+                <a class="navbar-brand" href="{{ route('home.index') }}">
+                    <span>
+                        {{ setting('general.name') }}
+                    </span>
+                </a>
+                @endif
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class=""> </span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav  mx-auto ">
+                        <li class="nav-item active">
+                            <a class="nav-link" href="{{ route('home.index') }}">Strona Główna <span class="sr-only">(current)</span></a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="menu.html">Menu</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="about.html">O nas</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="book.html">Zarezerwuj Stolik</a>
+                        </li>
+                    </ul>
+                    <div class="user_option">
+                        <a href="{{ route('login') }}" class="user_link">
+                            <i class="fa fa-user" aria-hidden="true"></i>
+                        </a>
+                        <a class="cart_link" href="#">
+                            <i class="fa fa-shopping-cart" aria-hidden="true"></i>
+                        </a>
+                        <form class="form-inline">
+                            <button class="btn  my-2 my-sm-0 nav_search-btn" type="submit">
+                                <i class="fa fa-search" aria-hidden="true"></i>
+                            </button>
+                        </form>
+                        <!-- <a href="" class="order_online">
+                            Order Online
+                        </a> -->
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </header>
+    <!-- end header section -->
+    <!-- slider section -->
+    <section class="slider_section ">
+        <div id="customCarousel1" class="slide carousel">
+            <div class="carousel-inner">
+                @foreach ($settings['headers'] ?? [] as $key => $setting)
+                <div class="carousel-item {{ $loop->first ? 'active' : '' }}">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-7 col-lg-6 ">
+                                <div class="detail-box">
+                                    <h1>
+                                        {{ setting('headers.' . $key . '_title') }}
+                                    </h1>
+                                    <p>
+                                        {{ setting('headers.' . $key . '_description') }}
+                                    </p>
+                                    <div class="btn-box">
+                                        <a href="" class="btn1">
+                                            Zobacz menu
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @endforeach
+            </div>
+            <div class="container">
+                <ol class="carousel-indicators">
+                    @foreach ($settings['headers'] ?? [] as $key => $setting)
+                    <li data-target="#customCarousel1" data-slide-to="{{ $loop->index }}" class="{{ $loop->first ? 'active' : '' }}"></li>
+                    @endforeach
+                </ol>
+            </div>
+        </div>
+
+    </section>
+    <!-- end slider section -->
+</div>
+
+<!-- offer section -->
+
+<section class="offer_section layout_padding-bottom">
+    <div class="offer_container">
+        <div class="container ">
+            <div class="row">
+                @foreach ($settings['promotions'] ?? [] as $key => $setting)
+                <div class="col-md-6">
+                    <div class="box">
+                        <div class="img-box">
+                            <img src="images/o1.jpg" alt="">
+                        </div>
+                        <div class="detail-box">
+                            <h5>
+                                {{ setting('promotions.' . $key . '_name') }}
+                            </h5>
+                            <h6>
+                                @if (!empty(setting('promotions.' . $key . '_percent')))<span>{{ setting('promotions.' . $key . '_percent') }}%</span> Mniej @elseif (setting('promotions.' . $key . '_price') > 0) <span>{{ setting('promotions.' . $key . '_price') }} zł</span> Mniej @endif
+                            </h6>
+                            <a href="">
+                                Zamów teraz <i class="fa fa-cart-shopping"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                @endforeach
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- end offer section -->
+
+<!-- food section -->
+
+<section class="food_section layout_padding-bottom">
     <div class="container">
-        <a class="navbar-brand" href="index.html"><span class="flaticon-pizza-1 mr-1"></span>Pizza<br><small>Delicous</small></a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="oi oi-menu"></span> Menu
-        </button>
-        <div class="collapse navbar-collapse" id="ftco-nav">
-            <ul class="navbar-nav ml-auto">
-                <li class="nav-item active"><a href="index.html" class="nav-link">Home</a></li>
-                <li class="nav-item"><a href="menu.html" class="nav-link">Menu</a></li>
-                <li class="nav-item"><a href="services.html" class="nav-link">Services</a></li>
-                <li class="nav-item"><a href="blog.html" class="nav-link">Blog</a></li>
-                <li class="nav-item"><a href="about.html" class="nav-link">About</a></li>
-                <li class="nav-item"><a href="contact.html" class="nav-link">Contact</a></li>
-            </ul>
+        <div class="heading_container heading_center">
+            <h2>
+                Nasze Menu
+            </h2>
         </div>
-    </div>
-</nav>
-<!-- END nav -->
 
-<section class="home-slider owl-carousel img">
-    <div class="slider-item">
+        <ul class="nav nav-tabs filters_menu" id="menu" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="all-tab" data-bs-toggle="tab" data-bs-target="#all" role="tab">Wszystko</button>
+            </li>
+            @foreach ($categories as $category)
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="{{ $category->name }}-tab" data-bs-toggle="tab" data-bs-target="#{{ $category->name }}" role="tab">{{ $category->name }}
+                </button>
+            </li>
+            @endforeach
+        </ul>
 
-        <div class="container">
-            <div class="row slider-text align-items-center" data-scrollax-parent="true">
-
-                <div class="col-md-6 col-sm-12 ftco-animate">
-                    <span class="subheading">Delicious</span>
-                    <h1 class="mb-4">Italian Cuizine</h1>
-                    <p class="mb-4 mb-md-5">A small river named Duden flows by their place and supplies it with the necessary regelialia.</p>
-                    <p><a href="#" class="btn btn-primary p-3 px-xl-4 py-xl-3">Order Now</a> <a href="#" class="btn btn-white btn-outline-white p-3 px-xl-4 py-xl-3">View Menu</a></p>
+        <div class="filters-content tab-content" id="menuContent">
+            <div class="row grid tab-pane fade show active" id="all" role="tabpanel">
+                @foreach ($dishes as $dish)
+                <div class="col-sm-6 col-lg-4">
+                    <div class="box">
+                        <div>
+                            <div class="img-box">
+                                <img src="images/f1.png" alt="">
+                            </div>
+                            <div class="detail-box">
+                                <h5>
+                                    {{ $dish->name }}
+                                </h5>
+                                <p>
+                                    {{ $dish->description }}
+                                </p>
+                                <div class="options">
+                                    <h6>
+                                        {{ $dish->price }} zł
+                                    </h6>
+                                    <a href="" class="cart-shopping">
+                                        <i class="fa fa-cart-shopping"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-md-6 ftco-animate">
-                    <img src="images/bg_1.png" class="img-fluid" alt="">
+                @if ($dishes->count() > 10)
+                <div class="btn-box">
+                    <a href="">
+                        View More
+                    </a>
                 </div>
-
+                @endif
+                @endforeach
             </div>
-        </div>
-    </div>
-
-    <div class="slider-item">
-
-        <div class="container">
-            <div class="row slider-text align-items-center" data-scrollax-parent="true">
-
-                <div class="col-md-6 col-sm-12 order-md-last ftco-animate">
-                    <span class="subheading">Crunchy</span>
-                    <h1 class="mb-4">Italian Pizza</h1>
-                    <p class="mb-4 mb-md-5">A small river named Duden flows by their place and supplies it with the necessary regelialia.</p>
-                    <p><a href="#" class="btn btn-primary p-3 px-xl-4 py-xl-3">Order Now</a> <a href="#" class="btn btn-white btn-outline-white p-3 px-xl-4 py-xl-3">View Menu</a></p>
+            @foreach ($categories as $category)
+            <div class="row grid tab-pane fade" id="{{ $category->name }}" role="tabpanel">
+                @foreach ($category->dishes as $dish)
+                <div class="col-sm-6 col-lg-4">
+                    <div class="box">
+                        <div>
+                            <div class="img-box">
+                                <img src="images/f1.png" alt="">
+                            </div>
+                            <div class="detail-box">
+                                <h5>
+                                    {{ $dish->name }}
+                                </h5>
+                                <p>
+                                    {{ $dish->description }}
+                                </p>
+                                <div class="options">
+                                    <h6>
+                                        {{ $dish->price }} zł
+                                    </h6>
+                                    <a href="" class="cart-shopping">
+                                        <i class="fa fa-cart-shopping"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-md-6 ftco-animate">
-                    <img src="images/bg_2.png" class="img-fluid" alt="">
+                @if ($category->dishes->count() > 10)
+                <div class="btn-box">
+                    <a href="">
+                        View More
+                    </a>
                 </div>
-
+                @endif
+                @endforeach
             </div>
-        </div>
-    </div>
-
-    <div class="slider-item" style="background-image: url(images/bg_3.jpg);">
-
-        <div class="container">
-            <div class="row slider-text justify-content-center align-items-center" data-scrollax-parent="true">
-
-                <div class="col-md-7 col-sm-12 text-center ftco-animate">
-                    <span class="subheading">Welcome</span>
-                    <h1 class="mb-4">We cooked your desired Pizza Recipe</h1>
-                    <p class="mb-4 mb-md-5">A small river named Duden flows by their place and supplies it with the necessary regelialia.</p>
-                    <p><a href="#" class="btn btn-primary p-3 px-xl-4 py-xl-3">Order Now</a> <a href="#" class="btn btn-white btn-outline-white p-3 px-xl-4 py-xl-3">View Menu</a></p>
-                </div>
-
-            </div>
+            @endforeach
         </div>
     </div>
 </section>
 
-<section class="ftco-intro">
-    <div class="container-wrap">
-        <div class="wrap d-md-flex">
-            <div class="info">
-                <div class="row no-gutters">
-                    <div class="col-md-4 d-flex ftco-animate">
-                        <div class="icon"><span class="icon-phone"></span></div>
-                        <div class="text">
-                            <h3>000 (123) 456 7890</h3>
-                            <p>A small river named Duden flows</p>
-                        </div>
-                    </div>
-                    <div class="col-md-4 d-flex ftco-animate">
-                        <div class="icon"><span class="icon-my_location"></span></div>
-                        <div class="text">
-                            <h3>198 West 21th Street</h3>
-                            <p>Suite 721 New York NY 10016</p>
-                        </div>
-                    </div>
-                    <div class="col-md-4 d-flex ftco-animate">
-                        <div class="icon"><span class="icon-clock-o"></span></div>
-                        <div class="text">
-                            <h3>Open Monday-Friday</h3>
-                            <p>8:00am - 9:00pm</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="social d-md-flex pl-md-5 p-4 align-items-center">
-                <ul class="social-icon">
-                    <li class="ftco-animate"><a href="#"><span class="icon-twitter"></span></a></li>
-                    <li class="ftco-animate"><a href="#"><span class="icon-facebook"></span></a></li>
-                    <li class="ftco-animate"><a href="#"><span class="icon-instagram"></span></a></li>
-                </ul>
-            </div>
-        </div>
-    </div>
-</section>
+<!-- end food section -->
 
-<section class="ftco-about d-md-flex">
-    <div class="one-half img" style="background-image: url(images/about.jpg);"></div>
-    <div class="one-half ftco-animate">
-        <div class="heading-section ftco-animate ">
-            <h2 class="mb-4">Welcome to <span class="flaticon-pizza">Pizza</span> A Restaurant</h2>
-        </div>
-        <div>
-            <p>On her way she met a copy. The copy warned the Little Blind Text, that where it came from it would have been rewritten a thousand times and everything that was left from its origin would be the word "and" and the Little Blind Text should turn around and return to its own, safe country. But nothing the copy said could convince her and so it didn’t take long until a few insidious Copy Writers ambushed her, made her drunk with Longe and Parole and dragged her into their agency, where they abused her for their.</p>
-        </div>
-    </div>
-</section>
+<!-- about section -->
 
-<section class="ftco-section ftco-services">
+<section class="about_section layout_padding">
+    <div class="container  ">
 
-    <div class="container">
-        <div class="row justify-content-center mb-5 pb-3">
-            <div class="col-md-7 heading-section ftco-animate text-center">
-                <h2 class="mb-4">Our Services</h2>
-                <p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts.</p>
-            </div>
-        </div>
         <div class="row">
-            <div class="col-md-4 ftco-animate">
-                <div class="media d-block text-center block-6 services">
-                    <div class="icon d-flex justify-content-center align-items-center mb-5">
-                        <span class="flaticon-diet"></span>
-                    </div>
-                    <div class="media-body">
-                        <h3 class="heading">Healthy Foods</h3>
-                        <p>Even the all-powerful Pointing has no control about the blind texts it is an almost unorthographic.</p>
-                    </div>
+            <div class="col-md-6 ">
+                <div class="img-box">
+                    <img src="images/about-img.png" alt="">
                 </div>
             </div>
-            <div class="col-md-4 ftco-animate">
-                <div class="media d-block text-center block-6 services">
-                    <div class="icon d-flex justify-content-center align-items-center mb-5">
-                        <span class="flaticon-bicycle"></span>
+            <div class="col-md-6">
+                <div class="detail-box">
+                    <div class="heading_container">
+                        <h2>
+                            {{ setting('about.title') }}
+                        </h2>
                     </div>
-                    <div class="media-body">
-                        <h3 class="heading">Fastest Delivery</h3>
-                        <p>Even the all-powerful Pointing has no control about the blind texts it is an almost unorthographic.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4 ftco-animate">
-                <div class="media d-block text-center block-6 services">
-                    <div class="icon d-flex justify-content-center align-items-center mb-5"><span class="flaticon-pizza-1"></span></div>
-                    <div class="media-body">
-                        <h3 class="heading">Original Recipes</h3>
-                        <p>Even the all-powerful Pointing has no control about the blind texts it is an almost unorthographic.</p>
-                    </div>
+                    <p>
+                        {{ setting('about.description') }}
+                    </p>
+                    <a href="">
+                        Czytaj więcej
+                    </a>
                 </div>
             </div>
         </div>
     </div>
 </section>
 
-<section class="ftco-section">
-    <div class="container">
-        <div class="row justify-content-center mb-5 pb-3">
-            <div class="col-md-7 heading-section ftco-animate text-center">
-                <h2 class="mb-4">Hot Pizza Meals</h2>
-                <p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts.</p>
-            </div>
-        </div>
-    </div>
-    <div class="container-wrap">
-        <div class="row no-gutters d-flex">
-            <div class="col-lg-4 d-flex ftco-animate">
-                <div class="services-wrap d-flex">
-                    <a href="#" class="img" style="background-image: url(images/pizza-1.jpg);"></a>
-                    <div class="text p-4">
-                        <h3>Italian Pizza</h3>
-                        <p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia </p>
-                        <p class="price"><span>$2.90</span> <a href="#" class="ml-2 btn btn-white btn-outline-white">Order</a></p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4 d-flex ftco-animate">
-                <div class="services-wrap d-flex">
-                    <a href="#" class="img" style="background-image: url(images/pizza-2.jpg);"></a>
-                    <div class="text p-4">
-                        <h3>Greek Pizza</h3>
-                        <p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia</p>
-                        <p class="price"><span>$2.90</span> <a href="#" class="ml-2 btn btn-white btn-outline-white">Order</a></p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4 d-flex ftco-animate">
-                <div class="services-wrap d-flex">
-                    <a href="#" class="img" style="background-image: url(images/pizza-3.jpg);"></a>
-                    <div class="text p-4">
-                        <h3>Caucasian Pizza</h3>
-                        <p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia</p>
-                        <p class="price"><span>$2.90</span> <a href="#" class="ml-2 btn btn-white btn-outline-white">Order</a></p>
-                    </div>
-                </div>
-            </div>
+<!-- end about section -->
 
-            <div class="col-lg-4 d-flex ftco-animate">
-                <div class="services-wrap d-flex">
-                    <a href="#" class="img order-lg-last" style="background-image: url(images/pizza-4.jpg);"></a>
-                    <div class="text p-4">
-                        <h3>American Pizza</h3>
-                        <p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia </p>
-                        <p class="price"><span>$2.90</span> <a href="#" class="ml-2 btn btn-white btn-outline-white">Order</a></p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4 d-flex ftco-animate">
-                <div class="services-wrap d-flex">
-                    <a href="#" class="img order-lg-last" style="background-image: url(images/pizza-5.jpg);"></a>
-                    <div class="text p-4">
-                        <h3>Tomatoe Pie</h3>
-                        <p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia</p>
-                        <p class="price"><span>$2.90</span> <a href="#" class="ml-2 btn btn-white btn-outline-white">Order</a></p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4 d-flex ftco-animate">
-                <div class="services-wrap d-flex">
-                    <a href="#" class="img order-lg-last" style="background-image: url(images/pizza-6.jpg);"></a>
-                    <div class="text p-4">
-                        <h3>Margherita</h3>
-                        <p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia</p>
-                        <p class="price"><span>$2.90</span> <a href="#" class="ml-2 btn btn-white btn-outline-white">Order</a></p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
+<!-- book section -->
+<section class="book_section layout_padding">
     <div class="container">
-        <div class="row justify-content-center mb-5 pb-3 mt-5 pt-5">
-            <div class="col-md-7 heading-section text-center ftco-animate">
-                <h2 class="mb-4">Our Menu Pricing</h2>
-                <p class="flip"><span class="deg1"></span><span class="deg2"></span><span class="deg3"></span></p>
-                <p class="mt-5">Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts.</p>
-            </div>
+        <div class="heading_container">
+            <h2>
+                Zarezerwuj stolik
+            </h2>
         </div>
         <div class="row">
             <div class="col-md-6">
-                <div class="pricing-entry d-flex ftco-animate">
-                    <div class="img" style="background-image: url(images/pizza-1.jpg);"></div>
-                    <div class="desc pl-3">
-                        <div class="d-flex text align-items-center">
-                            <h3><span>Italian Pizza</span></h3>
-                            <span class="price">$20.00</span>
+                <div class="form_container">
+                    <form action="{{ route('reservation.book') }}" method="post">
+                        @csrf
+                        <div class="row">
+                            <div class="col-md-6">
+                                <input type="text" class="form-control" placeholder="Imię" name="firstname">
+                            </div>
+                            <div class="col-md-6">
+                                <input type="text" class="form-control" placeholder="Nazwisko" name="lastname">
+                            </div>
                         </div>
-                        <div class="d-block">
-                            <p>A small river named Duden flows by their place and supplies</p>
+                        <div>
+                            <input type="text" class="form-control" placeholder="Telefon" name="telephone">
                         </div>
-                    </div>
-                </div>
-                <div class="pricing-entry d-flex ftco-animate">
-                    <div class="img" style="background-image: url(images/pizza-2.jpg);"></div>
-                    <div class="desc pl-3">
-                        <div class="d-flex text align-items-center">
-                            <h3><span>Hawaiian Pizza</span></h3>
-                            <span class="price">$29.00</span>
+                        <div>
+                            <input type="email" class="form-control" placeholder="Email" name="email">
                         </div>
-                        <div class="d-block">
-                            <p>A small river named Duden flows by their place and supplies</p>
+                        <div>
+                            <select class="form-control nice-select wide" name="persons">
+                                <option value="" disabled selected>Ilość osób</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                            </select>
                         </div>
-                    </div>
-                </div>
-                <div class="pricing-entry d-flex ftco-animate">
-                    <div class="img" style="background-image: url(images/pizza-3.jpg);"></div>
-                    <div class="desc pl-3">
-                        <div class="d-flex text align-items-center">
-                            <h3><span>Greek Pizza</span></h3>
-                            <span class="price">$20.00</span>
+                        <div>
+                            <input type="datetime-local" class="form-control" name="date_time">
                         </div>
-                        <div class="d-block">
-                            <p>A small river named Duden flows by their place and supplies</p>
+                        <div class="btn_box">
+                            <button type="submit">Zarezerwuj</button>
                         </div>
-                    </div>
-                </div>
-                <div class="pricing-entry d-flex ftco-animate">
-                    <div class="img" style="background-image: url(images/pizza-4.jpg);"></div>
-                    <div class="desc pl-3">
-                        <div class="d-flex text align-items-center">
-                            <h3><span>Bacon Crispy Thins</span></h3>
-                            <span class="price">$20.00</span>
-                        </div>
-                        <div class="d-block">
-                            <p>A small river named Duden flows by their place and supplies</p>
-                        </div>
-                    </div>
+                    </form>
                 </div>
             </div>
-
             <div class="col-md-6">
-                <div class="pricing-entry d-flex ftco-animate">
-                    <div class="img" style="background-image: url(images/pizza-5.jpg);"></div>
-                    <div class="desc pl-3">
-                        <div class="d-flex text align-items-center">
-                            <h3><span>Hawaiian Special</span></h3>
-                            <span class="price">$49.91</span>
-                        </div>
-                        <div class="d-block">
-                            <p>A small river named Duden flows by their place and supplies</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="pricing-entry d-flex ftco-animate">
-                    <div class="img" style="background-image: url(images/pizza-6.jpg);"></div>
-                    <div class="desc pl-3">
-                        <div class="d-flex text align-items-center">
-                            <h3><span>Ultimate Overload</span></h3>
-                            <span class="price">$20.00</span>
-                        </div>
-                        <div class="d-block">
-                            <p>A small river named Duden flows by their place and supplies</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="pricing-entry d-flex ftco-animate">
-                    <div class="img" style="background-image: url(images/pizza-7.jpg);"></div>
-                    <div class="desc pl-3">
-                        <div class="d-flex text align-items-center">
-                            <h3><span>Bacon Pizza</span></h3>
-                            <span class="price">$20.00</span>
-                        </div>
-                        <div class="d-block">
-                            <p>A small river named Duden flows by their place and supplies</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="pricing-entry d-flex ftco-animate">
-                    <div class="img" style="background-image: url(images/pizza-8.jpg);"></div>
-                    <div class="desc pl-3">
-                        <div class="d-flex text align-items-center">
-                            <h3><span>Ham &amp; Pineapple</span></h3>
-                            <span class="price">$20.00</span>
-                        </div>
-                        <div class="d-block">
-                            <p>A small river named Duden flows by their place and supplies</p>
-                        </div>
-                    </div>
+                <div class="map_container">
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d19738.373065842523!2d16.30059304414937!3d51.8007403!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x470593681fbfcd25%3A0x528da0bd3a29b139!2sBiedronka!5e0!3m2!1spl!2spl!4v1724500261465!5m2!1spl!2spl" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
                 </div>
             </div>
         </div>
     </div>
 </section>
+<!-- end book section -->
 
-<section class="ftco-gallery">
-    <div class="container-wrap">
-        <div class="row no-gutters">
-            <div class="col-md-3 ftco-animate">
-                <a href="#" class="gallery img d-flex align-items-center" style="background-image: url(images/gallery-1.jpg);">
-                    <div class="icon mb-4 d-flex align-items-center justify-content-center">
-                        <span class="icon-search"></span>
-                    </div>
-                </a>
-            </div>
-            <div class="col-md-3 ftco-animate">
-                <a href="#" class="gallery img d-flex align-items-center" style="background-image: url(images/gallery-2.jpg);">
-                    <div class="icon mb-4 d-flex align-items-center justify-content-center">
-                        <span class="icon-search"></span>
-                    </div>
-                </a>
-            </div>
-            <div class="col-md-3 ftco-animate">
-                <a href="#" class="gallery img d-flex align-items-center" style="background-image: url(images/gallery-3.jpg);">
-                    <div class="icon mb-4 d-flex align-items-center justify-content-center">
-                        <span class="icon-search"></span>
-                    </div>
-                </a>
-            </div>
-            <div class="col-md-3 ftco-animate">
-                <a href="#" class="gallery img d-flex align-items-center" style="background-image: url(images/gallery-4.jpg);">
-                    <div class="icon mb-4 d-flex align-items-center justify-content-center">
-                        <span class="icon-search"></span>
-                    </div>
-                </a>
-            </div>
-        </div>
-    </div>
-</section>
+<!-- client section -->
 
-
-<section class="ftco-counter ftco-bg-dark img" id="section-counter" style="background-image: url(images/bg_2.jpg);" data-stellar-background-ratio="0.5">
-
+<section class="client_section layout_padding-bottom">
     <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-10">
-                <div class="row">
-                    <div class="col-md-6 col-lg-3 d-flex justify-content-center counter-wrap ftco-animate">
-                        <div class="block-18 text-center">
-                            <div class="text">
-                                <div class="icon"><span class="flaticon-pizza-1"></span></div>
-                                <strong class="number" data-number="100">0</strong>
-                                <span>Pizza Branches</span>
-                            </div>
+        <div class="heading_container heading_center psudo_white_primary mb_45">
+            <h2>
+                Opinie naszych klientów
+            </h2>
+        </div>
+        <div class="carousel-wrap row ">
+            <div class="owl-carousel client_owl-carousel">
+                @foreach ($settings['opinions'] as $key => $setting)
+                <div class="item">
+                    <div class="box">
+                        <div class="detail-box">
+                            <p>
+                                {{ setting('opinions.' . $key . '_opinion') }}
+                            </p>
+                            <h6>
+                                {{ setting('opinions.' . $key . '_firstname') }} {{ setting('opinions.' . $key . '_lastname') }}
+                            </h6>
+                            <p class="stars-rate">
+                                @for ($i = 0; $i < setting('opinions.' . $key . '_rate' ); $i++)<i class="fa fa-star"></i>@endfor
+                            </p>
                         </div>
-                    </div>
-                    <div class="col-md-6 col-lg-3 d-flex justify-content-center counter-wrap ftco-animate">
-                        <div class="block-18 text-center">
-                            <div class="text">
-                                <div class="icon"><span class="flaticon-medal"></span></div>
-                                <strong class="number" data-number="85">0</strong>
-                                <span>Number of Awards</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6 col-lg-3 d-flex justify-content-center counter-wrap ftco-animate">
-                        <div class="block-18 text-center">
-                            <div class="text">
-                                <div class="icon"><span class="flaticon-laugh"></span></div>
-                                <strong class="number" data-number="10567">0</strong>
-                                <span>Happy Customer</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6 col-lg-3 d-flex justify-content-center counter-wrap ftco-animate">
-                        <div class="block-18 text-center">
-                            <div class="text">
-                                <div class="icon"><span class="flaticon-chef"></span></div>
-                                <strong class="number" data-number="900">0</strong>
-                                <span>Staff</span>
-                            </div>
+                        <div class="img-box">
+                            <img src="images/client1.jpg" alt="" class="box-img">
                         </div>
                     </div>
                 </div>
+                @endforeach
             </div>
         </div>
     </div>
 </section>
 
-<section class="ftco-menu">
-    <div class="container-fluid">
-        <div class="row d-md-flex">
-            <div class="col-lg-4 ftco-animate img f-menu-img mb-5 mb-md-0" style="background-image: url(images/about.jpg);">
-            </div>
-            <div class="col-lg-8 ftco-animate p-md-5">
-                <div class="row">
-                    <div class="col-md-12 nav-link-wrap mb-5">
-                        <div class="nav ftco-animate nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-                            <a class="nav-link active" id="v-pills-1-tab" data-toggle="pill" href="#v-pills-1" role="tab" aria-controls="v-pills-1" aria-selected="true">Pizza</a>
+<!-- end client section -->
 
-                            <a class="nav-link" id="v-pills-2-tab" data-toggle="pill" href="#v-pills-2" role="tab" aria-controls="v-pills-2" aria-selected="false">Drinks</a>
-
-                            <a class="nav-link" id="v-pills-3-tab" data-toggle="pill" href="#v-pills-3" role="tab" aria-controls="v-pills-3" aria-selected="false">Burgers</a>
-
-                            <a class="nav-link" id="v-pills-4-tab" data-toggle="pill" href="#v-pills-4" role="tab" aria-controls="v-pills-4" aria-selected="false">Pasta</a>
-                        </div>
-                    </div>
-                    <div class="col-md-12 d-flex align-items-center">
-
-                        <div class="tab-content ftco-animate" id="v-pills-tabContent">
-
-                            <div class="tab-pane fade show active" id="v-pills-1" role="tabpanel" aria-labelledby="v-pills-1-tab">
-                                <div class="row">
-                                    <div class="col-md-4 text-center">
-                                        <div class="menu-wrap">
-                                            <a href="#" class="menu-img img mb-4" style="background-image: url(images/pizza-1.jpg);"></a>
-                                            <div class="text">
-                                                <h3><a href="#">Itallian Pizza</a></h3>
-                                                <p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia.</p>
-                                                <p class="price"><span>$2.90</span></p>
-                                                <p><a href="#" class="btn btn-white btn-outline-white">Add to cart</a></p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4 text-center">
-                                        <div class="menu-wrap">
-                                            <a href="#" class="menu-img img mb-4" style="background-image: url(images/pizza-2.jpg);"></a>
-                                            <div class="text">
-                                                <h3><a href="#">Itallian Pizza</a></h3>
-                                                <p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia.</p>
-                                                <p class="price"><span>$2.90</span></p>
-                                                <p><a href="#" class="btn btn-white btn-outline-white">Add to cart</a></p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4 text-center">
-                                        <div class="menu-wrap">
-                                            <a href="#" class="menu-img img mb-4" style="background-image: url(images/pizza-3.jpg);"></a>
-                                            <div class="text">
-                                                <h3><a href="#">Itallian Pizza</a></h3>
-                                                <p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia.</p>
-                                                <p class="price"><span>$2.90</span></p>
-                                                <p><a href="#" class="btn btn-white btn-outline-white">Add to cart</a></p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="tab-pane fade" id="v-pills-2" role="tabpanel" aria-labelledby="v-pills-2-tab">
-                                <div class="row">
-                                    <div class="col-md-4 text-center">
-                                        <div class="menu-wrap">
-                                            <a href="#" class="menu-img img mb-4" style="background-image: url(images/drink-1.jpg);"></a>
-                                            <div class="text">
-                                                <h3><a href="#">Lemonade Juice</a></h3>
-                                                <p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia.</p>
-                                                <p class="price"><span>$2.90</span></p>
-                                                <p><a href="#" class="btn btn-white btn-outline-white">Add to cart</a></p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4 text-center">
-                                        <div class="menu-wrap">
-                                            <a href="#" class="menu-img img mb-4" style="background-image: url(images/drink-2.jpg);"></a>
-                                            <div class="text">
-                                                <h3><a href="#">Pineapple Juice</a></h3>
-                                                <p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia.</p>
-                                                <p class="price"><span>$2.90</span></p>
-                                                <p><a href="#" class="btn btn-white btn-outline-white">Add to cart</a></p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4 text-center">
-                                        <div class="menu-wrap">
-                                            <a href="#" class="menu-img img mb-4" style="background-image: url(images/drink-3.jpg);"></a>
-                                            <div class="text">
-                                                <h3><a href="#">Soda Drinks</a></h3>
-                                                <p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia.</p>
-                                                <p class="price"><span>$2.90</span></p>
-                                                <p><a href="#" class="btn btn-white btn-outline-white">Add to cart</a></p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="tab-pane fade" id="v-pills-3" role="tabpanel" aria-labelledby="v-pills-3-tab">
-                                <div class="row">
-                                    <div class="col-md-4 text-center">
-                                        <div class="menu-wrap">
-                                            <a href="#" class="menu-img img mb-4" style="background-image: url(images/burger-1.jpg);"></a>
-                                            <div class="text">
-                                                <h3><a href="#">Itallian Pizza</a></h3>
-                                                <p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia.</p>
-                                                <p class="price"><span>$2.90</span></p>
-                                                <p><a href="#" class="btn btn-white btn-outline-white">Add to cart</a></p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4 text-center">
-                                        <div class="menu-wrap">
-                                            <a href="#" class="menu-img img mb-4" style="background-image: url(images/burger-2.jpg);"></a>
-                                            <div class="text">
-                                                <h3><a href="#">Itallian Pizza</a></h3>
-                                                <p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia.</p>
-                                                <p class="price"><span>$2.90</span></p>
-                                                <p><a href="#" class="btn btn-white btn-outline-white">Add to cart</a></p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4 text-center">
-                                        <div class="menu-wrap">
-                                            <a href="#" class="menu-img img mb-4" style="background-image: url(images/burger-3.jpg);"></a>
-                                            <div class="text">
-                                                <h3><a href="#">Itallian Pizza</a></h3>
-                                                <p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia.</p>
-                                                <p class="price"><span>$2.90</span></p>
-                                                <p><a href="#" class="btn btn-white btn-outline-white">Add to cart</a></p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="tab-pane fade" id="v-pills-4" role="tabpanel" aria-labelledby="v-pills-4-tab">
-                                <div class="row">
-                                    <div class="col-md-4 text-center">
-                                        <div class="menu-wrap">
-                                            <a href="#" class="menu-img img mb-4" style="background-image: url(images/pasta-1.jpg);"></a>
-                                            <div class="text">
-                                                <h3><a href="#">Itallian Pizza</a></h3>
-                                                <p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia.</p>
-                                                <p class="price"><span>$2.90</span></p>
-                                                <p><a href="#" class="btn btn-white btn-outline-white">Add to cart</a></p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4 text-center">
-                                        <div class="menu-wrap">
-                                            <a href="#" class="menu-img img mb-4" style="background-image: url(images/pasta-2.jpg);"></a>
-                                            <div class="text">
-                                                <h3><a href="#">Itallian Pizza</a></h3>
-                                                <p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia.</p>
-                                                <p class="price"><span>$2.90</span></p>
-                                                <p><a href="#" class="btn btn-white btn-outline-white">Add to cart</a></p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4 text-center">
-                                        <div class="menu-wrap">
-                                            <a href="#" class="menu-img img mb-4" style="background-image: url(images/pasta-3.jpg);"></a>
-                                            <div class="text">
-                                                <h3><a href="#">Itallian Pizza</a></h3>
-                                                <p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia.</p>
-                                                <p class="price"><span>$2.90</span></p>
-                                                <p><a href="#" class="btn btn-white btn-outline-white">Add to cart</a></p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section class="ftco-section">
+<!-- footer section -->
+<footer class="footer_section">
     <div class="container">
-        <div class="row justify-content-center mb-5 pb-3">
-            <div class="col-md-7 heading-section ftco-animate text-center">
-                <h2 class="mb-4">Recent from blog</h2>
-                <p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts.</p>
-            </div>
-        </div>
-        <div class="row d-flex">
-            <div class="col-md-4 d-flex ftco-animate">
-                <div class="blog-entry align-self-stretch">
-                    <a href="blog-single.html" class="block-20" style="background-image: url('images/image_1.jpg');">
-                    </a>
-                    <div class="text py-4 d-block">
-                        <div class="meta">
-                            <div><a href="#">Sept 10, 2018</a></div>
-                            <div><a href="#">Admin</a></div>
-                            <div><a href="#" class="meta-chat"><span class="icon-chat"></span> 3</a></div>
-                        </div>
-                        <h3 class="heading mt-2"><a href="#">The Delicious Pizza</a></h3>
-                        <p>A small river named Duden flows by their place and supplies it with the necessary regelialia.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4 d-flex ftco-animate">
-                <div class="blog-entry align-self-stretch">
-                    <a href="blog-single.html" class="block-20" style="background-image: url('images/image_2.jpg');">
-                    </a>
-                    <div class="text py-4 d-block">
-                        <div class="meta">
-                            <div><a href="#">Sept 10, 2018</a></div>
-                            <div><a href="#">Admin</a></div>
-                            <div><a href="#" class="meta-chat"><span class="icon-chat"></span> 3</a></div>
-                        </div>
-                        <h3 class="heading mt-2"><a href="#">The Delicious Pizza</a></h3>
-                        <p>A small river named Duden flows by their place and supplies it with the necessary regelialia.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4 d-flex ftco-animate">
-                <div class="blog-entry align-self-stretch">
-                    <a href="blog-single.html" class="block-20" style="background-image: url('images/image_3.jpg');">
-                    </a>
-                    <div class="text py-4 d-block">
-                        <div class="meta">
-                            <div><a href="#">Sept 10, 2018</a></div>
-                            <div><a href="#">Admin</a></div>
-                            <div><a href="#" class="meta-chat"><span class="icon-chat"></span> 3</a></div>
-                        </div>
-                        <h3 class="heading mt-2"><a href="#">The Delicious Pizza</a></h3>
-                        <p>A small river named Duden flows by their place and supplies it with the necessary regelialia.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-
-<section class="ftco-appointment">
-
-    <div class="container-wrap">
-        <div class="row no-gutters d-md-flex align-items-center">
-            <div class="col-md-6 d-flex align-self-stretch">
-                <div id="map"></div>
-            </div>
-            <div class="col-md-6 appointment ftco-animate">
-                <h3 class="mb-3">Contact Us</h3>
-                <form action="#" class="appointment-form">
-                    <div class="d-md-flex">
-                        <div class="form-group">
-                            <input type="text" class="form-control" placeholder="First Name">
-                        </div>
-                    </div>
-                    <div class="d-me-flex">
-                        <div class="form-group">
-                            <input type="text" class="form-control" placeholder="Last Name">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <textarea name="" id="" cols="30" rows="3" class="form-control" placeholder="Message"></textarea>
-                    </div>
-                    <div class="form-group">
-                        <input type="submit" value="Send" class="btn btn-primary py-3 px-4">
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</section>
-
-<footer class="ftco-footer ftco-section img">
-
-    <div class="container">
-        <div class="row mb-5">
-            <div class="col-lg-3 col-md-6 mb-5 mb-md-5">
-                <div class="ftco-footer-widget mb-4">
-                    <h2 class="ftco-heading-2">About Us</h2>
-                    <p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts.</p>
-                    <ul class="ftco-footer-social list-unstyled float-md-left float-lft mt-5">
-                        <li class="ftco-animate"><a href="#"><span class="icon-twitter"></span></a></li>
-                        <li class="ftco-animate"><a href="#"><span class="icon-facebook"></span></a></li>
-                        <li class="ftco-animate"><a href="#"><span class="icon-instagram"></span></a></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="col-lg-4 col-md-6 mb-5 mb-md-5">
-                <div class="ftco-footer-widget mb-4">
-                    <h2 class="ftco-heading-2">Recent Blog</h2>
-                    <div class="block-21 mb-4 d-flex">
-                        <a class="blog-img mr-4" style="background-image: url(images/image_1.jpg);"></a>
-                        <div class="text">
-                            <h3 class="heading"><a href="#">Even the all-powerful Pointing has no control about</a></h3>
-                            <div class="meta">
-                                <div><a href="#"><span class="icon-calendar"></span> Sept 15, 2018</a></div>
-                                <div><a href="#"><span class="icon-person"></span> Admin</a></div>
-                                <div><a href="#"><span class="icon-chat"></span> 19</a></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="block-21 mb-4 d-flex">
-                        <a class="blog-img mr-4" style="background-image: url(images/image_2.jpg);"></a>
-                        <div class="text">
-                            <h3 class="heading"><a href="#">Even the all-powerful Pointing has no control about</a></h3>
-                            <div class="meta">
-                                <div><a href="#"><span class="icon-calendar"></span> Sept 15, 2018</a></div>
-                                <div><a href="#"><span class="icon-person"></span> Admin</a></div>
-                                <div><a href="#"><span class="icon-chat"></span> 19</a></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-2 col-md-6 mb-5 mb-md-5">
-                <div class="ftco-footer-widget mb-4 ml-md-4">
-                    <h2 class="ftco-heading-2">Services</h2>
-                    <ul class="list-unstyled">
-                        <li><a href="#" class="py-2 d-block">Cooked</a></li>
-                        <li><a href="#" class="py-2 d-block">Deliver</a></li>
-                        <li><a href="#" class="py-2 d-block">Quality Foods</a></li>
-                        <li><a href="#" class="py-2 d-block">Mixed</a></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-6 mb-5 mb-md-5">
-                <div class="ftco-footer-widget mb-4">
-                    <h2 class="ftco-heading-2">Have a Questions?</h2>
-                    <div class="block-23 mb-3">
-                        <ul>
-                            <li><span class="icon icon-map-marker"></span><span class="text">203 Fake St. Mountain View, San Francisco, California, USA</span></li>
-                            <li><a href="#"><span class="icon icon-phone"></span><span class="text">+2 392 3929 210</span></a></li>
-                            <li><a href="#"><span class="icon icon-envelope"></span><span class="text">info@yourdomain.com</span></a></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
         <div class="row">
-            <div class="col-md-12 text-center">
-
-                <p><!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-                    Copyright &copy;<script>
-                        document.write(new Date().getFullYear());
-                    </script> All rights reserved | This template is made with <i class="icon-heart" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
-                    <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. --></p>
+            <div class="col-md-4 footer-col">
+                <div class="footer_contact">
+                    <h4>
+                        Kontakt
+                    </h4>
+                    <div class="contact_link_box">
+                        <a href="">
+                            <i class="fa fa-map-marker" aria-hidden="true"></i>
+                            <span>
+                                {{ setting('contact.address') }}
+                            </span>
+                        </a>
+                        <a href="">
+                            <i class="fa fa-phone" aria-hidden="true"></i>
+                            <span>
+                                Zadzwoń {{ setting('contact.telephone') }}
+                            </span>
+                        </a>
+                        <a href="">
+                            <i class="fa fa-envelope" aria-hidden="true"></i>
+                            <span>
+                                {{ setting('contact.email') }}
+                            </span>
+                        </a>
+                    </div>
+                </div>
             </div>
+            <div class="col-md-4 footer-col">
+                <div class="footer_detail">
+                    @if (setting('general.name'))
+                    <a href="{{ route('home.index') }}" class="footer-logo">
+                        {{ setting('general.name') }}
+                    </a>
+                    @endif
+                    @if (setting('general.description'))
+                    <p>
+                        {{ setting('general.description') }}
+                    </p>
+                    @endif
+                    <div class="footer_social">
+                        @if (setting('general.socialmedia_facebook'))
+                        <a href="{{ setting('general.socialmedia_facebook') }}">
+                            <i class="fa-brands fa-facebook"></i>
+                        </a>
+                        @endif
+                        @if (setting('general.socialmedia_twitter'))
+                        <a href="{{ setting('general.socialmedia_twitter') }}">
+                            <i class="fa-brands fa-twitter"></i>
+                        </a>
+                        @endif
+                        @if (setting('general.socialmedia_linkedin'))
+                        <a href="{{ setting('general.socialmedia_linkedin') }}">
+                            <i class="fa-brands fa-linkedin"></i>
+                        </a>
+                        @endif
+                        @if (setting('general.socialmedia_instagram'))
+                        <a href="{{ setting('general.socialmedia_instagram') }}">
+                            <i class="fa-brands fa-instagram"></i>
+                        </a>
+                        @endif
+                        @if (setting('general.socialmedia_pinterest'))
+                        <a href="{{ setting('general.socialmedia_pinterest') }}">
+                            <i class="fa-brands fa-pinterest"></i>
+                        </a>
+                        @endif
+                        @if (setting('general.socialmedia_youtube'))
+                        <a href="{{ setting('general.socialmedia_youtube') }}">
+                            <i class="fa-brands fa-youtube"></i>
+                        </a>
+                        @endif
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 footer-col">
+                <h4>
+                    Godziny otwarcia
+                </h4>
+                @foreach ($settings['opening_hours'] as $key => $setting)
+                <p>
+                    {{ setting('opening_hours.' . $key . '_day') }}
+                </p>
+                <p>
+                    {{ setting('opening_hours.' . $key . '_open') }} - {{ setting('opening_hours.' . $key . '_close') }}
+                </p>
+                @endforeach
+            </div>
+        </div>
+        <div class="footer-info">
+            <p>
+                &copy; <span id="displayYear"></span> All Rights Reserved By
+                <a href="https://html.design/">Free Html Templates</a><br><br>
+                &copy; <span id="displayYear"></span> Distributed By
+                <a href="https://themewagon.com/" target="_blank">ThemeWagon</a>
+            </p>
         </div>
     </div>
 </footer>
+<!-- footer section -->
 @endsection

@@ -36,7 +36,7 @@
 <!-- Main Sidebar Container -->
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
   <!-- Brand Logo -->
-  <a href="{{ route('welcome') }}" class="brand-link">
+  <a href="{{ route('home.index') }}" class="brand-link">
     <!-- <img src="dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3"
          style="opacity: .8"> -->
     <span class="brand-text font-weight-light">Italiano Pizza</span>
@@ -72,6 +72,22 @@
             <i class="nav-icon fas fa-th"></i>
             <p>
               {{ __('Zamówienia') }}
+            </p>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="{{ route('reservation.index') }}" class="nav-link{{ Route::is('reservation.index') ? ' active' : '' }}">
+            <i class="nav-icon fa-solid fa-table"></i>
+            <p>
+              {{ __('Rezerwacje') }}
+            </p>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="{{ route('setting.index') }}" class="nav-link{{ Route::is('setting.index') ? ' active' : '' }}">
+            <i class="nav-icon fa-solid fa-gear"></i>
+            <p>
+              {{ __('Ustawienia') }}
             </p>
           </a>
         </li>
