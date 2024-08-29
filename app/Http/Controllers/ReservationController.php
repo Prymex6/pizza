@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Reservation;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 class ReservationController extends Controller
 {
@@ -12,7 +13,7 @@ class ReservationController extends Controller
      */
     public function index()
     {
-        $reservations = Reservation::paginate(2);
+        $reservations = Reservation::paginate(20);
 
         return view('reservation.index', ['reservations' => $reservations]);
     }
@@ -22,7 +23,7 @@ class ReservationController extends Controller
      */
     public function create()
     {
-        //
+        return view('reservation.create');
     }
 
     /**
@@ -32,7 +33,11 @@ class ReservationController extends Controller
     {
         Reservation::create($request->all());
 
-        return redirect()->back();
+        if (in_array(session('previous_route'), ['home.index', 'home.reservation'])) {
+            return redirect()->route('home.index')->with('success', 'Stolik został zarezerwowany!');
+        }
+
+        return redirect()->route('reservation.index')->with('success', 'Rezerwacja została dodana!');
     }
 
     /**
@@ -48,7 +53,7 @@ class ReservationController extends Controller
      */
     public function edit(Reservation $reservation)
     {
-        //
+        return view('reservation.edit', ['reservation' => $reservation]);
     }
 
     /**
@@ -56,7 +61,9 @@ class ReservationController extends Controller
      */
     public function update(Request $request, Reservation $reservation)
     {
-        //
+        $reservation->update($request->all());
+
+        return redirect()->route('reservation.index')->with('success', 'Rezerwacja została zmodyfikowana!');
     }
 
     /**
@@ -64,6 +71,17 @@ class ReservationController extends Controller
      */
     public function destroy(Reservation $reservation)
     {
-        //
+        $reservation->delete();
+
+        return redirect()->route('reservation.index')->with('success', 'Rezerwacja została usunięta!');
+    }
+
+    public function status(Request $request, Reservation $reservation)
+    {
+        $reservation->status = $request->input('status');
+
+        $reservation->save();
+
+        return redirect()->back()->with('success', 'Status został zmieniony');
     }
 }

@@ -1,4 +1,17 @@
 @extends('layouts.admin')
+@section('style')
+<style>
+    .status form {
+        display: inline-block;
+    }
+
+    .status span {
+        display: block;
+        /* font-size: 18px; */
+        padding: 0 0 8px;
+    }
+</style>
+@endsection
 @section('content')
 <div class="content-header">
     <div class="container-fluid">
@@ -46,6 +59,7 @@
                                                 <th>Email</th>
                                                 <th>Ilość osób</th>
                                                 <th>Data i Godzina</th>
+                                                <th>Status</th>
                                                 <th>Akcja</th>
                                             </tr>
                                         </thead>
@@ -59,6 +73,34 @@
                                                 <td>{{ $reservation->email }}</td>
                                                 <td>{{ $reservation->persons }}</td>
                                                 <td>{{ $reservation->date_time }}</td>
+                                                <td class="status">
+                                                    @if ($reservation->status == null)
+                                                    <span>Oczekujący</span>
+                                                    @elseif ($reservation->status == '0')
+                                                    <span class="text-danger">Odrzucony</span>
+                                                    @elseif ($reservation->status == 1)
+                                                    <span class="text-success">Zaakceptowany</span>
+                                                    @endif
+
+                                                    <div>
+                                                        @if ($reservation->status == null || $reservation->status == '0')
+                                                        <form action="{{ route('reservation.status', $reservation->id) }}" method="post">
+                                                            @csrf
+                                                            @method('PUT')
+                                                            <input type="hidden" name="status" value="1">
+                                                            <button class="btn btn-sm btn-success">Akceptuj</button>
+                                                        </form>
+                                                        @endif
+                                                        @if ($reservation->status == null || $reservation->status == '1')
+                                                        <form action="{{ route('reservation.status', $reservation->id) }}" method="post">
+                                                            @csrf
+                                                            @method('PUT')
+                                                            <input type="hidden" name="status" value="0">
+                                                            <button class="btn btn-sm btn-danger">Odrzuć</button>
+                                                        </form>
+                                                        @endif
+                                                    </div>
+                                                </td>
                                                 <td>
                                                     <form action="{{ route('reservation.destroy', $reservation->id) }}" method="POST" onsubmit="return confirm('Czy na pewno chcesz usunąć ten rekord?');">
                                                         @csrf

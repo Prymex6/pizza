@@ -48,6 +48,6 @@ class SettingController extends Controller
     {
         $this->settingService->update($request->input($code), $code);
 
-        return redirect()->route('setting.index');
+        return redirect()->route('setting.index')->with('success', 'Ustawienia zostały zaaktualizowane!');
     }
 }
