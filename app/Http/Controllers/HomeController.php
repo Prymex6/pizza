@@ -65,6 +65,6 @@ class HomeController extends Controller
     {
         $dish = Dish::with(['category', 'sizes'])->findOrFail($request->dish_id);
 
-        dd($dish);
+        return view('home.size', ['dish' => $dish]);
     }
 }

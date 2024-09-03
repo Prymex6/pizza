@@ -180,7 +180,7 @@
 
         });
 
-        $('.sizes').append('<div class="row size size1-box my-1" data-iteration="1"><div class="col-sm-6"><input type="text" class="form-control" id="name" placeholder="Wpisz nazwe" name="sizes[' + iteration + '][name]"></div><div class="col-sm-6"><div class="input-group"><input type="number" class="form-control" id="price" placeholder="Wpisz cenę" name="sizes[' + iteration + '][price]" step="0.01" value="' + price + '"><div class="input-group-btn"><button class="btn btn-success" onclick="addSize()" type="button"><i class="fa fa-plus"></i></button></div></div></div></div>');
+        $('.sizes').append('<div class="row size size' + iteration + '-box my-1" data-iteration="' + iteration + '"><div class="col-sm-6"><input type="text" class="form-control" id="name" placeholder="Wpisz nazwe" name="sizes[' + iteration + '][name]"></div><div class="col-sm-6"><div class="input-group"><input type="number" class="form-control" id="price" placeholder="Wpisz cenę" name="sizes[' + iteration + '][price]" step="0.01" value="' + price + '"><div class="input-group-btn"><button class="btn btn-success" onclick="addSize()" type="button"><i class="fa fa-plus"></i></button></div></div></div></div>');
 
         if ($('.size').length == 1) {
             $('.sizes').find('.btn-success').closest('button').each(function() {

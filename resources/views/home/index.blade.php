@@ -147,7 +147,32 @@
     }
 
     .modal-dialog {
-        max-width: 650px;
+        max-width: 550px;
+    }
+
+    .modal-size .quantity-button {
+        background-color: #222831;
+        padding: 5px 10px;
+        cursor: pointer;
+        border: 2px solid #333942;
+        border-radius: 100%;
+        color: #FFF;
+    }
+
+    .modal-size #quantity {
+        width: 50px;
+        text-align: center;
+        height: 34px;
+        margin: 3px 5px;
+        background-color: #222831;
+        color: #FFF;
+        border: 0;
+    }
+
+    .modal-size input::-webkit-outer-spin-button,
+    .modal-size input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
     }
 </style>
 @endsection
@@ -468,7 +493,42 @@
                     '_token': $(token).val(),
                     'dish_id': $(e).data('dish_id')
                 },
-                success: function(response) {}
+                success: function(response) {
+                    $('.modal .modal-body').html(response);
+
+                    var price = $('input[name="size"]:checked').data('price');
+
+                    $('button.add-to-cart').text('Dodaj do koszyka (' + price * 1 + ' zł)');
+
+                    $('.quantity-box button').on('click', function() {
+                        var quantity = $('.quantity-box #quantity').val();
+
+                        if ($(this).hasClass('plus')) {
+                            quantity++;
+                        } else if ($(this).hasClass('minus')) {
+                            quantity--;
+                        }
+
+                        if (quantity < 1) {
+                            quantity = 1;
+                        }
+
+                        $('.quantity-box #quantity').val(quantity);
+
+                        var price = $('input[name="size"]:checked').data('price');
+
+                        $('button.add-to-cart').text('Dodaj do koszyka (' + price * quantity + ' zł)');
+                    });
+
+                    $('.sizes input[type="radio"]').on('click', function() {
+                        var price = $('.sizes input[type="radio"]:checked').data('price');
+                        var quantity = $('.quantity-box #quantity').val();
+
+                        $('button.add-to-cart').text('Dodaj do koszyka (' + price * quantity + ' zł)');
+                    });
+
+                    $('.modal').modal('show');
+                }
             });
         } else {
             $.ajax({

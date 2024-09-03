@@ -11,7 +11,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Zamknij</button>
-                <button type="button" class="btn btn-primary">Dodaj do koszyka</button>
+                <button type="button" class="btn btn-primary add-to-cart">Dodaj do koszyka</button>
             </div>
         </div>
     </div>
