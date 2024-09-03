@@ -11,8 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('settings', function (Blueprint $table) {
-            $table->text('value')->nullable()->change();
+        Schema::table('carts', function (Blueprint $table) {
+            $table->dropColumn('dish_id');
+            $table->dropColumn('quantity');
         });
     }
 
@@ -21,8 +22,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('settings', function (Blueprint $table) {
-            $table->text('value')->nullable(false)->change();
+        Schema::table('carts', function (Blueprint $table) {
+            $table->foreignId('dish_id')->nullable()->constrained()->onDelete('cascade');
+            $table->integer('quantity');
         });
     }
 };

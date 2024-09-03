@@ -120,14 +120,3 @@
         </div>
 </section>
 @endsection
-@section('script')
-<script>
-    function addIngredients() {
-        $('.ingredients').first().before('<div class="ingredients"><div class="input-group"><input type="text" class="form-control" id="ingredients" placeholder="Wpisz składnik"><div class="input-group-btn"><button class="btn btn-danger" onclick="removeIngredients($(this))" type="button"><i class="fa fa-remove"></i></button></div></div></div>');
-    }
-
-    function removeIngredients(e) {
-        $(e).closest('.ingredients').remove();
-    }
-</script>
-@endsection

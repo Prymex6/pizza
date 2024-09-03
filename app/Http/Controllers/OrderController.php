@@ -4,15 +4,29 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Order;
+use App\Models\Dish;
+use App\Models\Cart;
+
+use Carbon\Carbon;
+
+use App\Services\cartService;
 
 class OrderController extends Controller
 {
+    protected $cartService;
+
+    public function __construct(cartService $cartService)
+    {
+        $this->cartService = $cartService;
+    }
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $orders = Order::all();
+        $orders = Order::paginate(20);
+
         return view('order.index', ['orders' => $orders]);
     }
 
@@ -21,7 +35,9 @@ class OrderController extends Controller
      */
     public function create()
     {
-        //
+        $dishes = Dish::all();
+
+        return view('order.create', ['dishes' => $dishes]);
     }
 
     /**
@@ -29,7 +45,39 @@ class OrderController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $full_name = explode(' ', $request->full_name);
+
+        $firstname = array_values($full_name);
+        $firstname = array_shift($firstname);
+
+        $request->merge(['firstname' => $firstname, 'lastname' => end($full_name)]);
+        $order = Order::create($request->all());
+
+        $dishes = $request->dishes;
+
+        if (empty($dishes)) {
+            $dishes = $this->cartService->getListDishesFromCart($request);
+        }
+
+        foreach ($dishes as $dish) {
+            $order->dishes()->attach($dish['id'], [
+                'quantity'      => $dish['pivot']['quantity'],
+                'price'         => $dish['price'],
+                'created_at'    => Carbon::now(),
+                'updated_at'    => Carbon::now(),
+            ]);
+        }
+
+        $this->cartService->clearCart($request);
+        $cart = Cart::where('user_token', $request->cookie('user_token'))->first();
+        if ($cart) {
+            $cart->delete();
+        }
+        if (in_array(session('previous_route'), ['cart.index'])) {
+            return redirect()->route('home.index')->with('success', 'Zamówienie zostało złożone!');
+        }
+
+        return redirect()->route('order.index')->with('success', 'Zamówienie zostało dodane!');
     }
 
     /**
@@ -43,9 +91,11 @@ class OrderController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Order $order)
     {
-        //
+        $dishes = Dish::all();
+
+        return view('order.edit', ['order' => $order, 'dishes' => $dishes]);
     }
 
     /**

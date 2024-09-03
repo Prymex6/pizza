@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Dish;
-use App\Models\Setting;
 
 use Illuminate\Http\Request;
 
@@ -24,9 +23,7 @@ class SettingController extends Controller
      */
     public function index()
     {
-        $settings = settings();
-
-        return view('setting.index', ['settings' => $settings]);
+        return view('setting.index');
     }
 
     /**
@@ -36,9 +33,8 @@ class SettingController extends Controller
     {
         $dishes = Dish::all();
         $categories = Category::all();
-        $settings = settings();
 
-        return view('setting.edit', ['code' => $code, 'dishes' => $dishes, 'categories' => $categories, 'settings' => $settings]);
+        return view('setting.edit', ['code' => $code, 'dishes' => $dishes, 'categories' => $categories]);
     }
 
     /**

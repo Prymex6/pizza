@@ -5,12 +5,156 @@
     .stars-rate {
         color: #ffd700;
     }
+
+    .tab-content>.active {
+        display: flex !important;
+    }
+
+    /* Stylizacja kontenera modala */
+    .modal-content {
+        background-color: #222831;
+        /* Ciemne tło */
+        border-radius: 15px;
+        /* Zaokrąglone rogi dla nowoczesnego wyglądu */
+        border: none;
+        /* Brak zewnętrznej obramówki */
+        box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
+        /* Subtelny cień dla efektu głębi */
+        color: #FFF;
+        /* Biały tekst */
+    }
+
+    /* Stylizacja nagłówka modala */
+    .modal-header {
+        background-color: #222831;
+        /* Ciemne tło nagłówka */
+        color: #FFF;
+        /* Biały tekst */
+        border-top-left-radius: 15px;
+        /* Dopasowanie zaokrąglonych rogów */
+        border-top-right-radius: 15px;
+        padding: 20px;
+    }
+
+    .modal-title {
+        font-family: 'Pacifico', cursive;
+        /* Font przypominający ręczne pismo, elegancki i przyjazny */
+        font-size: 28px;
+        margin: 0;
+        color: #ffbe33;
+        /* Żółty kolor dla tytułu */
+    }
+
+    /* Stylizacja ciała modala */
+    .modal-body {
+        font-family: 'Arial', sans-serif;
+        color: #FFF;
+        /* Biały tekst */
+        padding: 20px;
+        line-height: 1.6;
+    }
+
+    .modal-body p {
+        margin-bottom: 15px;
+        /* Odstęp między akapitami */
+    }
+
+    /* Stylizacja stopki modala */
+    .modal-footer {
+        background-color: #393e46;
+        /* Trochę jaśniejszy odcień tła */
+        border-bottom-left-radius: 15px;
+        /* Dopasowanie zaokrąglonych rogów */
+        border-bottom-right-radius: 15px;
+        padding: 15px;
+        border-top: 1px solid #222831;
+        /* Subtelna linia oddzielająca stopkę */
+    }
+
+    /* Stylizacja przycisków */
+    .btn-primary {
+        background-color: #ffbe33;
+        /* Żółty kolor inspirowany serem */
+        border-color: #ffbe33;
+        color: #222831;
+        /* Ciemny kolor tekstu na żółtym tle */
+        font-family: 'Arial', sans-serif;
+        font-size: 16px;
+        padding: 10px 20px;
+        transition: background-color 0.3s ease;
+        /* Łagodna animacja zmiany koloru */
+    }
+
+    .btn-primary:hover {
+        background-color: #e6a900;
+        /* Ciemniejszy odcień żółtego przy hover */
+        border-color: #e6a900;
+    }
+
+    .btn-danger {
+        background-color: #393e46;
+        /* Ciemny kolor przycisku */
+        border-color: #393e46;
+        color: #FFF;
+        /* Biały tekst */
+        font-family: 'Arial', sans-serif;
+        font-size: 16px;
+        padding: 10px 20px;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-danger:hover {
+        background-color: #222831;
+        /* Ciemniejszy kolor przy hover */
+        border-color: #222831;
+    }
+
+    .btn-secondary {
+        background-color: #393e46;
+        /* Ciemniejszy przycisk zamknięcia */
+        border-color: #393e46;
+        color: #FFF;
+        /* Biały tekst */
+        font-family: 'Arial', sans-serif;
+        font-size: 16px;
+        padding: 10px 20px;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-secondary:hover {
+        background-color: #222831;
+        /* Ciemniejszy odcień dla efektu hover */
+        border-color: #222831;
+    }
+
+    /* Stylizacja przycisku zamknięcia */
+    .btn-close {
+        color: #FFF;
+        /* Biały kolor krzyżyka */
+        opacity: 1;
+        /* Pełna widoczność */
+    }
+
+    .btn-close:hover {
+        color: #ffbe33;
+        /* Żółty kolor po najechaniu */
+    }
+
+    /* Dodatkowe szczegóły */
+    .modal-header .btn-close {
+        padding: 10px;
+        margin: -10px;
+    }
+
+    .modal-dialog {
+        max-width: 650px;
+    }
 </style>
 @endsection
 @section('slider')
 <!-- slider section -->
-<section class="slider_section ">
-    <div id="customCarousel1" class="slide carousel">
+<section class="slider_section">
+    <div id="customCarousel1" class="slide carousel" data-bs-ride="carousel">
         <div class="carousel-inner">
             @foreach ($settings['headers'] ?? [] as $key => $setting)
             <div class="carousel-item {{ $loop->first ? 'active' : '' }}">
@@ -39,12 +183,11 @@
         <div class="container">
             <ol class="carousel-indicators">
                 @foreach ($settings['headers'] ?? [] as $key => $setting)
-                <li data-target="#customCarousel1" data-slide-to="{{ $loop->index }}" class="{{ $loop->first ? 'active' : '' }}"></li>
+                <li data-bs-target="#customCarousel1" data-bs-slide-to="{{ $loop->index }}" class="{{ $loop->first ? 'active' : '' }}"></li>
                 @endforeach
             </ol>
         </div>
     </div>
-
 </section>
 <!-- end slider section -->
 @endsection
@@ -124,7 +267,7 @@
                                     <h6>
                                         {{ $dish->price }} zł
                                     </h6>
-                                    <a href="" class="cart-shopping">
+                                    <a class="cart-shopping" data-sizes="{{ $dish->sizes->count() > 0 }}" data-dish_id="{{ $dish->id }}" onclick="addDishToCart($(this))">
                                         <i class="fa fa-cart-shopping"></i>
                                     </a>
                                 </div>
@@ -283,7 +426,7 @@
         </div>
         <div class="carousel-wrap row ">
             <div class="owl-carousel client_owl-carousel">
-                @foreach ($settings['opinions'] as $key => $setting)
+                @foreach ($settings['opinions'] ?? [] as $key => $setting)
                 <div class="item">
                     <div class="box">
                         <div class="detail-box">
@@ -307,6 +450,38 @@
         </div>
     </div>
 </section>
-
+@include('foundation.modal', ['title' => 'Dodaj do koszyka'])
 <!-- end client section -->
+@endsection
+@section('script')
+<script>
+    var addToCartRoute = "{{ route('cart.add') }}";
+    var sizeModalRoute = "{{ route('home.size') }}";
+    var token = '@csrf';
+
+    function addDishToCart(e) {
+        if ($(e).data('sizes')) {
+            $.ajax({
+                method: "GET",
+                url: sizeModalRoute,
+                data: {
+                    '_token': $(token).val(),
+                    'dish_id': $(e).data('dish_id')
+                },
+                success: function(response) {}
+            });
+        } else {
+            $.ajax({
+                method: "POST",
+                url: addToCartRoute,
+                data: {
+                    '_token': $(token).val(),
+                    'dish_id': $(e).data('dish_id'),
+                    'quantity': 1,
+                },
+                success: function(response) {}
+            });
+        }
+    }
+</script>
 @endsection

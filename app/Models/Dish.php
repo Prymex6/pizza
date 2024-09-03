@@ -15,4 +15,21 @@ class Dish extends Model
     {
         return $this->belongsTo(Category::class);
     }
+
+    public function carts()
+    {
+        return $this->belongsToMany(Cart::class, 'cart_dish')
+            ->withPivot('quantity') ?? [];
+    }
+
+    public function orders()
+    {
+        return $this->belongsToMany(Order::class, 'order_dish')
+            ->withPivot('quantity');
+    }
+
+    public function sizes()
+    {
+        return $this->hasMany(Size::class);
+    }
 }

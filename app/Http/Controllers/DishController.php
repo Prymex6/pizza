@@ -13,7 +13,7 @@ class DishController extends Controller
      */
     public function index()
     {
-        $dishes = Dish::with('category')->paginate(2);
+        $dishes = Dish::with(['category', 'sizes'])->paginate(20);
 
         return view('dish.index', ['dishes' => $dishes]);
     }
@@ -35,7 +35,15 @@ class DishController extends Controller
     {
         $request->merge(['ingredients' => implode(',', array_filter($request->ingredients))]);
 
-        Dish::create($request->all());
+        if (!empty($request->sizes)) {
+            $request->merge(['price' => null]);
+        }
+
+        $dish = Dish::create($request->all());
+
+        if (!empty($request->sizes)) {
+            $dish->sizes()->createMany($request->sizes);
+        }
 
         return redirect()->route('dish.index')->with('success', 'Danie zostało dodane');
     }
@@ -64,7 +72,19 @@ class DishController extends Controller
     {
         $request->merge(['ingredients' => implode(',', array_filter($request->ingredients))]);
 
+        if ($dish->sizes()) {
+            $dish->sizes()->delete();
+        }
+
+        if (!empty($request->sizes)) {
+            $request->merge(['price' => null]);
+        }
+
         $dish->update($request->all());
+
+        if (!empty($request->sizes)) {
+            $dish->sizes()->createMany($request->sizes);
+        }
 
         return redirect()->route('dish.index')->with('success', 'Danie zostało zaaktualizowane');
     }

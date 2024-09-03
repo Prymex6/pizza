@@ -68,8 +68,8 @@
           </a>
         </li>
         <li class="nav-item">
-          <a href="#" class="nav-link{{ Route::is('order.index') ? ' active' : '' }}">
-            <i class="nav-icon fas fa-th"></i>
+          <a href="{{ route('order.index') }}" class="nav-link{{ Route::is('order.index') ? ' active' : '' }}">
+            <i class="nav-icon fa-solid fa-cart-shopping"></i>
             <p>
               {{ __('Zamówienia') }}
             </p>

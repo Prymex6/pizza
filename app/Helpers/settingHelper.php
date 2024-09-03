@@ -5,11 +5,12 @@ use Illuminate\Support\Str;
 
 function settings()
 {
-    if (empty($codeKey)) {
+    $settings = [];
 
+    if (empty($codeKey)) {
         foreach (Setting::all() as $setting) {
 
-            $skey = explode('_', $setting['key']);
+            $skey = explode_after_last_underscore($setting['key']);
             $firstkey = array_values($skey);
             $firstkey = array_shift($skey);
 
@@ -89,4 +90,21 @@ function explodeData($elements, $model)
     }
 
     return [];
+}
+
+function explode_after_last_underscore($string)
+{
+    if (strlen($string) > 0) {
+        $last_underscore_position = strrpos($string, '_');
+        if ($last_underscore_position !== false) {
+            return [
+                substr($string, 0, $last_underscore_position),
+                substr($string, $last_underscore_position + 1)
+            ];
+        } else {
+            return [$string];
+        }
+    } else {
+        return [];
+    }
 }

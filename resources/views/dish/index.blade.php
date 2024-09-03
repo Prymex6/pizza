@@ -44,7 +44,7 @@
                                                 <th>Opis</th>
                                                 <th>Składniki</th>
                                                 <th>Kategoria</th>
-                                                <th>Cena</th>
+                                                <th>Rozmiar i cena</th>
                                                 <th>Akcja</th>
                                             </tr>
                                         </thead>
@@ -56,7 +56,15 @@
                                                 <td>{{ $dish->description }}</td>
                                                 <td>{{ $dish->ingredients }}</td>
                                                 <td>{{ $dish->category->name }}</td>
-                                                <td>{{ $dish->price }} zł</td>
+                                                <td>
+                                                    @if ($dish->price)
+                                                    {{ $dish->price }} zł
+                                                    @else
+                                                    @foreach ($dish->sizes as $size)
+                                                    {{ $size->name }} - {{ $size->price }} zł <br>
+                                                    @endforeach
+                                                    @endif
+                                                </td>
                                                 <td>
                                                     <form action="{{ route('dish.destroy', $dish->id) }}" method="POST" onsubmit="return confirm('Czy na pewno chcesz usunąć ten rekord?');">
                                                         @csrf

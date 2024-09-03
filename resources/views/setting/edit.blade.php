@@ -600,10 +600,12 @@
 @section('script')
 <script>
     $(document).ready(function() {
-        $('#dishes, #categories').multiselect({
-            includeSelectAllOption: true,
-            buttonWidth: '100%'
-        });
+        if ($('.multiselect').length > 0) {
+            $('#dishes, #categories').multiselect({
+                includeSelectAllOption: true,
+                buttonWidth: '100%'
+            });
+        }
 
         $('.promotion-price').on('keyup', function() {
             if ($('.promotion-price').val()) {
@@ -633,13 +635,14 @@
     });
 
     function addHeader(e) {
-        var iteration = $('.header').data('iteration');
+        var iteration = $('.header').last().data('iteration') ?? 0;
         iteration++;
-        $('.headers').append('<div class="header header' + iteration + '-box"><div class="row"><div class="col-sm-12 col-md-6"><h4><b>Nagłówek ' + iteration + '</b></h4></div><div class="col-sm-12 col-md-6 float-end"><button type="button" class="btn btn-smbtn-danger float-end" onclick="removeHeaders(' + iteration + ');"><i class="fa fa-trash"></i></button></div></div><div class="mx-2 my-1" data-iteration="' + iteration + '"><div class="form-group"><label for="title">Wpisz tytuł</label><input type="text" class="form-control" id="title" placeholder="Wpisz tytuł" name="headers[header' + iteration + '_title]"></div> <div class="form-group"><label for="description">Wpisz opis</label><textarea class="form-control" id="description" placeholder="Wpisz opis" name="headers[header' + iteration + '_description]"></textarea></div></div></div>');
+        $('.headers').append('<div class="header header' + iteration + '-box" data-iteration="' + iteration +
+            '"><div class="row"><div class="col-sm-12 col-md-6"><h4><b>Nagłówek ' + iteration + '</b></h4></div><div class="col-sm-12 col-md-6 float-end"><button type="button" class="btn btn-sm btn-danger float-end" onclick="removeHeader(' + iteration + ');"><i class="fa fa-trash"></i></button></div></div><div class="mx-2 my-1" data-iteration="' + iteration + '"><div class="form-group"><label for="title">Wpisz tytuł</label><input type="text" class="form-control" id="title" placeholder="Wpisz tytuł" name="headers[header' + iteration + '_title]"></div> <div class="form-group"><label for="description">Wpisz opis</label><textarea class="form-control" id="description" placeholder="Wpisz opis" name="headers[header' + iteration + '_description]"></textarea></div></div></div>');
     }
 
     function addPromotion(e) {
-        var iteration = $('.promotion').data('iteration');
+        var iteration = $('.promotion').last().data('iteration') ?? 0;
         iteration++;
         $('.promotions').append('<div class="promotion promotion' + iteration +
             '-box" data-iteration="' + iteration +
@@ -656,13 +659,13 @@
     }
 
     function addOpinion(e) {
-        var iteration = $('.opinion').data('iteration');
+        var iteration = $('.opinion').last().data('iteration') ?? 0;
         iteration++;
         $('.opinions').append('<div class="opinion opinion' + iteration + '-box" data-iteration="' + iteration + '"><div class="row"><div class="col-sm-12 col-md-6"><h4><b>Opinia ' + iteration + '</b></h4></div><div class="col-sm-12 col-md-6 float-end"><button type="button" class="btn btn-sm btn-danger float-end" onclick="removeOpinion(' + iteration + ');"><i class="fa fa-trash"></i></button></div></div><div class="mx-2 my-1"><div class="row"><div class="col-md-6"><div class="form-group"><label for="firstname">Wpisz imie</label><input type="text" class="form-control" id="firstname" placeholder="Wpisz imie" name="opinions[opinion' + iteration + '_firstname]"></div></div><div class="col-md-6"><div class="form-group"><label for="lastname">Wpisz Nazwisko</label><input type="text" class="form-control" id="lastname" placeholder="Wpisz nazwisko" name="opinions[opinion' + iteration + '_lastname]"></div></div></div><div class="form-group"><label for="opinion">Wpisz opinie</label><textarea class="form-control" id="opinion" placeholder="Wpisz opinie" name="opinions[opinion' + iteration + '_opinion]"></textarea></div><div class="form-group"><label for="rate">Wpisz ocenę</label><input type="number" class="form-control" id="rate" placeholder="Wpisz ocenę" name="opinions[opinion' + iteration + '_rate]" min="1" max="5"></div></div></div>');
     }
 
     function addOpenHour(e) {
-        var iteration = $('.opening_hour').data('iteration');
+        var iteration = $('.opening_hour').last().data('iteration') ?? 0;
         iteration++;
         $('.opening_hours').append('<div class="opening_hour opening_hour' + iteration + '-box" data-iteration="' + iteration + '"><div class="row"><div class="col-sm-12 col-md-6"><h4><b>Dzień ' + iteration + '</b></h4></div><div class="col-sm-12 col-md-6 float-end"><button type="button" class="btn btn-sm btn-danger float-end" onclick="removeOpeningHour(' + iteration + ');"><i class="fa fa-trash"></i></button></div></div><div class="mx-2 my-1"><div class="row"><div class="col-md-4"><div class="form-group"><label for="day">Dzień</label><input type="text" class="form-control" id="day" placeholder="Dzień" name="opening_hours[opening_hour' + iteration + '_day]" ></div></div><div class="col-md-4"><div class="form-group"><label for="open">Otwarcie</label><input type="time" class="form-control" id="open" placeholder="Otwarcie" name="opening_hours[opening_hour' + iteration + '_open]"></div></div><div class="col-md-4"><div class="form-group"><label for="close">Zamknięcie</label><input type="time" class="form-control" id="close" placeholder="Zamknięcie" name="opening_hours[opening_hour' + iteration + '_close]"></div></div></div></div>');
     }

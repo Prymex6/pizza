@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use App\Models\Setting;
-use PhpParser\Node\Stmt\Return_;
 
 class SettingService
 {
@@ -32,7 +31,7 @@ class SettingService
 
     private function generateKey($key)
     {
-        $ekey = explode('_', $key);
+        $ekey = explode_after_last_underscore($key);
 
         $end_key = end($ekey);
         $first_key = array_values($ekey);
@@ -40,7 +39,7 @@ class SettingService
         $first_key = array_shift($first_key);
         $first_key = rtrim($first_key, 's');
 
-        if (preg_match('~[0-9]+~', $first_key)) {
+        if (preg_match('/\d/', $first_key)) {
             if ($this->last_key != $first_key) {
                 $this->iteration++;
             }
@@ -48,10 +47,11 @@ class SettingService
 
         $this->last_key = $first_key;
 
+        $org_first_key = $first_key;
         $first_key = preg_replace('/\d/', '', $first_key);
 
         if (strpos($key, '_')) {
-            if (preg_match('~[0-9]+~', $first_key)) {
+            if (preg_match('/\d/', $org_first_key)) {
                 return $first_key . $this->iteration . '_' . $end_key;
             }
 

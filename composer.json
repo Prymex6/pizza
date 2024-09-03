@@ -25,7 +25,8 @@
             "Database\\Seeders\\": "database/seeders/"
         },
         "files": [
-            "app/Helpers/SettingHelper.php"
+            "app/Helpers/SettingHelper.php",
+            "app/Helpers/ArrayHelper.php"
         ]
     },
     "autoload-dev": {
@@ -33,7 +34,8 @@
             "Tests\\": "tests/"
         },
         "files": [
-            "app/Helpers/SettingHelper.php"
+            "app/Helpers/SettingHelper.php",
+            "app/Helpers/ArrayHelper.php"
         ]
     },
     "scripts": {

@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Home;
+use Illuminate\Http\Request;
+
 use App\Models\Category;
 use App\Models\Dish;
-use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
@@ -59,5 +59,12 @@ class HomeController extends Controller
         $settings = settings();
 
         return view('home.reservation', ['settings' => $settings]);
+    }
+
+    public function size(Request $request)
+    {
+        $dish = Dish::with(['category', 'sizes'])->findOrFail($request->dish_id);
+
+        dd($dish);
     }
 }

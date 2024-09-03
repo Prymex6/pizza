@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('settings', function (Blueprint $table) {
-            $table->text('value')->nullable()->change();
+        Schema::table('orders', function (Blueprint $table) {
+            $table->renameColumn('payment_delivery', 'payment');
         });
     }
 
@@ -21,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('settings', function (Blueprint $table) {
-            $table->text('value')->nullable(false)->change();
+        Schema::table('orders', function (Blueprint $table) {
+            $table->renameColumn('payment', 'payment_delivery');
         });
     }
 };

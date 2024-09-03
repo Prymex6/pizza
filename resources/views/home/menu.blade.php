@@ -1,5 +1,12 @@
 @extends('layouts.default')
 @section('content')
+@section('style')
+<style>
+    .tab-content>.active {
+        display: flex !important;
+    }
+</style>
+@endsection
 <!-- food section -->
 
 <section class="food_section layout_padding">
