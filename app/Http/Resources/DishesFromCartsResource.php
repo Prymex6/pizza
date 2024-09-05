@@ -14,6 +14,10 @@ class DishesFromCartsResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return [$this->pivot->dish_id => $this->pivot->quantity];
+        return [
+            'dish_id'   =>  $this->pivot->dish_id,
+            'quantity'  =>  $this->pivot->quantity,
+            'size_id'  =>  $this->pivot->size_id,
+        ];
     }
 }

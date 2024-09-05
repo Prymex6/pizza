@@ -61,7 +61,7 @@ class HomeController extends Controller
         return view('home.reservation', ['settings' => $settings]);
     }
 
-    public function size(Request $request)
+    public function modalCart(Request $request)
     {
         $dish = Dish::with(['category', 'sizes'])->findOrFail($request->dish_id);
 

@@ -45,23 +45,28 @@ class CartController extends Controller
         }
 
         $dishes = $this->cartService->getCarts($request)->toArray($request);
-
         $dishes = flattenArray($dishes);
 
-        if (isset($dishes[$request->get('dish_id')])) {
+        $dish = $request->get('dish_id') . ($request->get('size_id') ? '_' . $request->get('size_id') : '');
+        // dump($dishes);
 
-            $request->merge(['quantity' => $dishes[$request->get('dish_id')] += $request->get('quantity')]);
+        if (isset($dishes[$dish])) {
+            $request->merge(['quantity' => $dishes[$dish]['quantity'] += $request->get('quantity')]);
 
             $cart = Cart::where('user_token', $request->cookie('user_token'))->first();
 
-            $cart->dishes()->updateExistingPivot($request->get('dish_id'), ['quantity' => $request->get('quantity')]);
+            $cart->dishes()->wherePivot('size_id', $request->get('size_id'))->updateExistingPivot($request->get('dish_id'), ['quantity' => $request->get('quantity')]);
         } else {
-            $cart = Cart::create([
-                'user_token'    => $request->cookie('user_token'),
-            ]);
+            $cart = Cart::where('user_token', $request->cookie('user_token'))->first();
+            if (!$cart) {
+                $cart = Cart::create([
+                    'user_token'    => $request->cookie('user_token'),
+                ]);
+            }
 
             $cart->dishes()->attach($request->get('dish_id'), [
                 'quantity' => $request->get('quantity'),
+                'size_id' => $request->get('size_id'),
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ]);
@@ -73,11 +78,55 @@ class CartController extends Controller
         ]);
     }
 
+    public function updateQuantity(Request $request)
+    {
+        $user_token = $request->cookie('user_token');
+
+        if (!$user_token) {
+            return;
+        }
+
+        $dishes = $this->cartService->getCarts($request)->toArray($request);
+        $dishes = flattenArray($dishes);
+
+        $dish = $request->get('dish_id') . ($request->get('size_id') ? '_' . $request->get('size_id') : '');
+
+        if (isset($dishes[$dish])) {
+            $cart = Cart::where('user_token', $request->cookie('user_token'))->first();
+
+            $cart->dishes()->wherePivot('size_id', $request->get('size_id'))->updateExistingPivot($request->get('dish_id'), ['quantity' => $request->get('quantity')]);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Ilość dania została zmieniona!'
+        ]);
+    }
+
     /**
      * Remove the specified resource from storage.
      */
     public function removeDish(Request $request)
     {
-        //
+        $user_token = $request->cookie('user_token');
+
+        if (!$user_token) {
+            return;
+        }
+
+        $dishes = $this->cartService->getCarts($request)->toArray($request);
+        $dishes = flattenArray($dishes);
+
+        $dish = $request->get('dish_id') . ($request->get('size_id') ? '_' . $request->get('size_id') : '');
+
+        if (isset($dishes[$dish])) {
+            $cart = Cart::where('user_token', $request->cookie('user_token'))->first();
+            $cart->dishes()->wherePivot('size_id', $request->get('size_id'))->detach($request->get('dish_id'));
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Danie zostało usunięte z koszyka!'
+        ]);
     }
 }

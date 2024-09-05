@@ -14,6 +14,6 @@ class Cart extends Model
     public function dishes()
     {
         return $this->belongsToMany(Dish::class, 'cart_dish')
-            ->withPivot('quantity');
+            ->withPivot(['quantity', 'size_id']);
     }
 }

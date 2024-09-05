@@ -44,7 +44,7 @@
         font-style: italic;
     }
 
-    .cart .btn {
+    .cart .btn-cart {
         display: block;
         width: 100%;
         padding: 10px;
@@ -58,7 +58,7 @@
         text-decoration: none;
     }
 
-    .cart .btn:hover {
+    .cart .btn-cart:hover {
         background-color: #218838;
     }
 
@@ -66,6 +66,30 @@
         content: "*";
         color: red;
         margin-left: 4px;
+    }
+
+    .quantity-box .quantity-button {
+        background-color: #fff;
+        padding: 5px 10px;
+        cursor: pointer;
+        border: 2px solid #ddd;
+        border-radius: 100%;
+        color: #000;
+    }
+
+    .quantity-box #quantity {
+        width: 50px;
+        text-align: center;
+        height: 34px;
+        margin: 3px 5px;
+        color: #000;
+        border: 0;
+    }
+
+    .quantity-box input::-webkit-outer-spin-button,
+    .quantity-box input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
     }
 </style>
 @endsection
@@ -81,15 +105,33 @@
                 <th>Składniki</th>
                 <th>Ilość</th>
                 <th>Cena</th>
+                <th>Akcja</th>
             </tr>
         </thead>
         <tbody>
             @foreach ($dishes ?? [] as $dish)
-            <tr>
-                <td>{{ $dish->name }}</td>
+            <tr data-dish_id="{{ $dish->id }}" data-size_id="{{ $dish->pivot->size_id }}" data-price="@if (!empty($dish->size)){{ $dish->size->price }}@else{{ $dish->price }}@endif">
+                <td>{{ $dish->name }}@if ($dish->size) - {{ $dish->size->name }} @endif</td>
                 <td>{{ $dish->ingredients }}</td>
-                <td>{{ $dish->pivot->quantity }}</td>
-                <td>{{ $dish->price }} zł x {{ $dish->pivot->quantity }} = {{ $dish->price * $dish->pivot->quantity }} zł</td>
+                <td class="quantity-box">
+                    <button class="quantity-button minus">
+                        <i class="fa fa-minus"></i>
+                    </button>
+                    <input type="number" id="quantity" name="quantity" min="1" value="{{ $dish->pivot->quantity }}">
+                    <button class="quantity-button plus">
+                        <i class="fa fa-plus"></i>
+                    </button>
+                </td>
+                <td class="price">
+                    @if (!empty($dish->size))
+                    {{ $dish->size->price }} zł x {{ $dish->pivot->quantity }} = {{ $dish->size->price * $dish->pivot->quantity }} zł
+                    @else
+                    {{ $dish->price }} zł x {{ $dish->pivot->quantity }} = {{ $dish->price * $dish->pivot->quantity }} zł
+                    @endif
+                </td>
+                <td>
+                    <button type="button" class="btn btn-sm btn-danger" onclick="removeDish($(this))"><i class="fa fa-remove"></i></button>
+                </td>
             </tr>
             @endforeach
         </tbody>
@@ -251,7 +293,7 @@
             <p>[Wpisz swoje uwagi, np. preferencje dotyczące czasu dostawy, alergie, itp.]</p>
         </div>
 
-        <button href="#" class="btn">Złóż zamówienie</button>
+        <button href="#" class="btn-cart">Złóż zamówienie</button>
     </form>
     @else
     <h3>Koszyk jest pusty</h3>
@@ -260,6 +302,11 @@
 @endsection
 @section('script')
 <script>
+    var updateQuantity = "{{ route('cart.update') }}";
+    var deleteDish = "{{ route('cart.destroy') }}";
+    var token = '@csrf';
+    let timer;
+
     $(function() {
         $('input[name="realization"]').on('change', function() {
             if ($('input[name="realization"]:checked').val() == 'reception' || $('input[name="realization"]:checked').val() == 'site') {
@@ -302,7 +349,78 @@
         setTimeout(function() {
             $('select[name="hours"]').niceSelect('destroy');
         }, 1000);
+
+        $('.quantity-box button').on('click', function() {
+            updateDishQuantity($(this));
+            // var price = $('#price').val() ? $('#price').val() : $('.sizes input[type="radio"]:checked').data('price');
+        });
+
+        $('.quantity-box #quantity').on('change', function() {
+            updateDishQuantity($(this));
+            // var price = $('#price').val() ? $('#price').val() : $('.sizes input[type="radio"]:checked').data('price');
+        });
     });
+
+    function updateDishQuantity(e) {
+        clearTimeout(timer);
+        var quantity = $(e).closest('.quantity-box').find('#quantity').val();
+
+        if ($(e).hasClass('plus')) {
+            quantity++;
+        } else if ($(e).hasClass('minus')) {
+            quantity--;
+        }
+
+        if (quantity < 1) {
+            quantity = 1;
+        }
+
+        $(e).closest('.quantity-box').find('#quantity').val(quantity);
+
+        var dish_id = $(e).closest('tr').data('dish_id');
+        var size_id = $(e).closest('tr').data('size_id');
+        var price = $(e).closest('tr').data('price');
+
+        var price_box = $(e).closest('tr').find('.price');
+
+        timer = setTimeout(function() {
+            $.ajax({
+                method: "PUT",
+                url: updateQuantity,
+                data: {
+                    '_token': $(token).val(),
+                    '_method': 'PUT',
+                    'dish_id': dish_id,
+                    'size_id': size_id,
+                    'quantity': quantity
+                },
+                success: function(response) {
+                    price_box.html(price + ' zł x ' + quantity + ' = ' + price * quantity + ' zł');
+                }
+            });
+        }, 700);
+    }
+
+    function removeDish(e) {
+        var dish_id = $(e).closest('tr').data('dish_id');
+        var size_id = $(e).closest('tr').data('size_id');
+
+        timer = setTimeout(function() {
+            $.ajax({
+                method: "DELETE",
+                url: deleteDish,
+                data: {
+                    '_token': $(token).val(),
+                    '_method': 'DELETE',
+                    'dish_id': dish_id,
+                    'size_id': size_id,
+                },
+                success: function(response) {
+                    $(e).closest('tr').remove();
+                }
+            });
+        }, 700);
+    }
 </script>
 @endsection
 

@@ -3,10 +3,10 @@
 function flattenArray($array)
 {
     $result = [];
-    foreach ($array as $subArray) {
-        foreach ($subArray as $key => $value) {
-            $result[$key] = $value; // Dodaj elementy do dwuwymiarowej tablicy
-        }
+    foreach ($array as $value) {
+        $result[$value['dish_id'] . ($value['size_id'] ? '_' . $value['size_id'] : '')] = [
+            'quantity'  =>  $value['quantity'],
+        ];
     }
     return $result;
 }

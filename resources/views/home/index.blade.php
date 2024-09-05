@@ -290,9 +290,13 @@
                                 </p>
                                 <div class="options">
                                     <h6>
+                                        @if ($dish->sizes->isNotEmpty())
+                                        {{ $dish->sizes[0]->price }} zł
+                                        @else
                                         {{ $dish->price }} zł
+                                        @endif
                                     </h6>
-                                    <a class="cart-shopping" data-sizes="{{ $dish->sizes->count() > 0 }}" data-dish_id="{{ $dish->id }}" onclick="addDishToCart($(this))">
+                                    <a class="cart-shopping" data-sizes="{{ $dish->sizes->count() > 0 }}" data-dish_id="{{ $dish->id }}" onclick="modalCart($(this))">
                                         <i class="fa fa-cart-shopping"></i>
                                     </a>
                                 </div>
@@ -481,67 +485,81 @@
 @section('script')
 <script>
     var addToCartRoute = "{{ route('cart.add') }}";
-    var sizeModalRoute = "{{ route('home.size') }}";
+    var modalCartRoute = "{{ route('home.modalCart') }}";
     var token = '@csrf';
 
-    function addDishToCart(e) {
-        if ($(e).data('sizes')) {
-            $.ajax({
-                method: "GET",
-                url: sizeModalRoute,
-                data: {
-                    '_token': $(token).val(),
-                    'dish_id': $(e).data('dish_id')
-                },
-                success: function(response) {
-                    $('.modal .modal-body').html(response);
+    function modalCart(e) {
+        $.ajax({
+            method: "GET",
+            url: modalCartRoute,
+            data: {
+                '_token': $(token).val(),
+                'dish_id': $(e).data('dish_id')
+            },
+            success: function(response) {
+                $('.modal .modal-body').html(response);
 
-                    var price = $('input[name="size"]:checked').data('price');
+                var price = $('#price').val() ? $('#price').val() : $('.sizes input[type="radio"]:checked').data('price');
 
-                    $('button.add-to-cart').text('Dodaj do koszyka (' + price * 1 + ' zł)');
+                $('button.add-to-cart').text('Dodaj do koszyka (' + price * 1 + ' zł)');
 
-                    $('.quantity-box button').on('click', function() {
-                        var quantity = $('.quantity-box #quantity').val();
+                $('.quantity-box button').on('click', function() {
+                    var quantity = $('.quantity-box #quantity').val();
 
-                        if ($(this).hasClass('plus')) {
-                            quantity++;
-                        } else if ($(this).hasClass('minus')) {
-                            quantity--;
-                        }
+                    if ($(this).hasClass('plus')) {
+                        quantity++;
+                    } else if ($(this).hasClass('minus')) {
+                        quantity--;
+                    }
 
-                        if (quantity < 1) {
-                            quantity = 1;
-                        }
+                    if (quantity < 1) {
+                        quantity = 1;
+                    }
 
-                        $('.quantity-box #quantity').val(quantity);
+                    $('.quantity-box #quantity').val(quantity);
 
-                        var price = $('input[name="size"]:checked').data('price');
+                    var price = $('#price').val() ? $('#price').val() : $('.sizes input[type="radio"]:checked').data('price');
 
-                        $('button.add-to-cart').text('Dodaj do koszyka (' + price * quantity + ' zł)');
-                    });
+                    $('button.add-to-cart').text('Dodaj do koszyka (' + price * quantity + ' zł)');
+                });
 
-                    $('.sizes input[type="radio"]').on('click', function() {
-                        var price = $('.sizes input[type="radio"]:checked').data('price');
-                        var quantity = $('.quantity-box #quantity').val();
+                $('.sizes input[type="radio"]').on('click', function() {
+                    var price = $('#price').val() ? $('#price').val() : $('.sizes input[type="radio"]:checked').data('price');
+                    var quantity = $('.quantity-box #quantity').val();
 
-                        $('button.add-to-cart').text('Dodaj do koszyka (' + price * quantity + ' zł)');
-                    });
+                    $('button.add-to-cart').text('Dodaj do koszyka (' + price * quantity + ' zł)');
+                });
 
-                    $('.modal').modal('show');
+
+                $('.modal').modal('show');
+            }
+        });
+    }
+
+    $('button.add-to-cart').on('click', function() {
+        addDishToCart();
+    });
+
+    function addDishToCart() {
+        var dish_id = $('#dish_id').val();
+        var quantity = $('.quantity-box #quantity').val();
+        var size_id = $('.sizes input[type="radio"]:checked').val();
+        $.ajax({
+            method: "POST",
+            url: addToCartRoute,
+            data: {
+                '_token': $(token).val(),
+                'dish_id': dish_id,
+                'quantity': quantity,
+                'size_id': size_id,
+            },
+            success: function(response) {
+                if (response.success) {
+                    toastr.success(response.message);
+                    $('.modal').modal('hide');
                 }
-            });
-        } else {
-            $.ajax({
-                method: "POST",
-                url: addToCartRoute,
-                data: {
-                    '_token': $(token).val(),
-                    'dish_id': $(e).data('dish_id'),
-                    'quantity': 1,
-                },
-                success: function(response) {}
-            });
-        }
+            }
+        });
     }
 </script>
 @endsection

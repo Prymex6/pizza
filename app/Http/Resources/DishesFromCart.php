@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Size;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -19,6 +20,7 @@ class DishesFromCart extends JsonResource
             'ingredients'   => $this->ingredients,
             'price'         => $this->price,
             'quantity'      => $this->pivot->quantity ?? null,
+            'size'          => $this->size
         ];
     }
 }

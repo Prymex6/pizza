@@ -16,9 +16,11 @@ Route::get('/home', [HomeController::class, 'index'])->name('home.index')->middl
 Route::get('/menu', [HomeController::class, 'menu'])->name('home.menu');
 Route::get('/about', [HomeController::class, 'about'])->name('home.about');
 Route::get('/reservation', [HomeController::class, 'reservation'])->name('home.reservation')->middleware([SaveCurrentRoute::class]);
-Route::get('/size', [HomeController::class, 'size'])->name('home.size');
+Route::get('/modalCart', [HomeController::class, 'modalCart'])->name('home.modalCart');
 Route::get('/cart', [CartController::class, 'index'])->name('cart.index')->middleware([SaveCurrentRoute::class]);
 Route::post('/cart/add', [CartController::class, 'addDish'])->name('cart.add')->middleware([SaveCurrentRoute::class]);
+Route::put('/cart/update', [CartController::class, 'updateQuantity'])->name('cart.update')->middleware([SaveCurrentRoute::class]);
+Route::delete('/cart/destroy', [CartController::class, 'removeDish'])->name('cart.destroy')->middleware([SaveCurrentRoute::class]);
 
 Route::post('/reservation/store', [ReservationController::class, 'store'])->name('reservation.book');
 Route::post('/order/store', [OrderController::class, 'store'])->name('order.add');

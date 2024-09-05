@@ -1,6 +1,8 @@
 <div class="modal-size">
+    <input type="hidden" id="dish_id" value="{{ $dish->id }}">
     <h4>Nazwa dania: {{ $dish->name }}</h4>
     <span>Składniki: {{ $dish->ingredients }}</span>
+    @if ($dish->sizes->isNotEmpty())
     <div class="row mt-5 sizes">
         <h5>Rozmiar dania: </h5>
         @foreach ($dish->sizes as $size)
@@ -14,6 +16,9 @@
         </div>
         @endforeach
     </div>
+    @else
+    <input type="hidden" id="price" value="{{ $dish->price }}">
+    @endif
     <hr>
     <div class="quantity-box row">
         <div class="col-sm-12 d-flex justify-content-center">

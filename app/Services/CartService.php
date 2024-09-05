@@ -5,6 +5,7 @@ namespace App\Services;
 use Illuminate\Http\Request;
 
 use App\Models\Cart;
+use App\Models\Size;
 
 use App\Http\Resources\DishesFromCart;
 use App\Http\Resources\DishesFromCartsResource;
@@ -13,9 +14,16 @@ class CartService
 {
     private function getDishes(Request $request)
     {
-        $cart = Cart::with('dishes')->where('user_token', $request->cookie('user_token'))->first();
+        $cart = Cart::with(['dishes'])->where('user_token', $request->cookie('user_token'))->first();
 
-        return !empty($cart) ? $cart->dishes()->withPivot('quantity')->get() : [];
+        if (!empty($cart)) {
+            return $cart->dishes->each(function ($dish) {
+                $dish->size = Size::find($dish->pivot->size_id);
+            });
+        }
+
+        return [];
+        // return !empty($cart) ? $cart->dishes()->withPivot(['quantity', 'size_id'])->get() : [];
     }
 
     public function getCarts(Request $request)
