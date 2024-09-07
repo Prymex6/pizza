@@ -3,7 +3,7 @@
 use App\Models\Setting;
 use Illuminate\Support\Str;
 
-function settings()
+function settings($ignore = [])
 {
     $settings = [];
 
@@ -13,6 +13,8 @@ function settings()
             $skey = explode_after_last_underscore($setting['key']);
             $firstkey = array_values($skey);
             $firstkey = array_shift($skey);
+
+            if (!empty($ignore) && in_array($firstkey, $ignore)) continue;
 
             $settings[$setting['code']][$firstkey] = $setting['value'] ? true : false;
         }
@@ -51,6 +53,15 @@ function setting($codeKey = null, $explode = false)
                 return $elements ? (array)$elements : [];
             }
         }
+    }
+
+    $position = strpos($key, '_');
+    if (empty($result) && $position !== false && $position <= 0) {
+        $result = Setting::where('code', $code)
+            ->where('key', 'like', '%' . $key)
+            ->get();
+
+        return [preg_replace('/\d/', '', $result[$key]) => preg_replace('/\D/', '', $result[$key])];
     }
 
     if (empty($result) && strpos($key, '_') == false) {

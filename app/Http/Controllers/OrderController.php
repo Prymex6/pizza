@@ -61,8 +61,9 @@ class OrderController extends Controller
 
         foreach ($dishes as $dish) {
             $order->dishes()->attach($dish['id'], [
+                'size'          => $dish['size']['name'] ?? '',
+                'price'         => $dish['price'] ? $dish['price'] : $dish['size']['price'],
                 'quantity'      => $dish['pivot']['quantity'],
-                'price'         => $dish['price'],
                 'created_at'    => Carbon::now(),
                 'updated_at'    => Carbon::now(),
             ]);

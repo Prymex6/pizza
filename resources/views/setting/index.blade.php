@@ -311,5 +311,43 @@
                 </div>
             </div>
         </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="col-sm-11 fs-3 m-auto">
+                                Statusy
+                            </div>
+                            <div class="col-sm-1">
+                                <a href="{{ route('setting.edit', 'statuses') }}" class="btn btn-block btn-success">Edytuj</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div id="wrapper" class="dataTables_wrapper dt-bootstrap4">
+                            <div class="row">
+                                <div class="col-sm-12 col-md-6"></div>
+                                <div class="col-sm-12 col-md-6"></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    @if (!empty($settings['statuses']))
+                                    @foreach ($settings['statuses'] ?? [] as $key => $setting)
+                                    <h4><b>Status {{ $loop->iteration }}</b></h4>
+                                    <div class="mx-2 my-1">
+                                        @if (setting('statuses.' . $key . '_name'))<p class="text-start"><b>Nazwa</b>: {{ setting('statuses.' . $key . '_name') }} @if (setting('statuses.' . $key . '_default' )) (domyślny) @endif</p>@endif
+                                    </div>
+                                    @endforeach
+                                    @else
+                                    -
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 </section>
 @endsection

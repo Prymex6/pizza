@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use Illuminate\Support\Str;
 use App\Models\Setting;
 
 class SettingService
@@ -18,7 +19,6 @@ class SettingService
 
             $setting = [
                 'code'  => $code,
-                // 'key'   => strpos($key, '_') ? $first_key . $iteration . '_' . $end_key : $end_key,
                 'key' => $this->generateKey($key),
                 'value' => $value,
             ];
@@ -37,7 +37,7 @@ class SettingService
         $first_key = array_values($ekey);
 
         $first_key = array_shift($first_key);
-        $first_key = rtrim($first_key, 's');
+        $first_key = Str::singular($first_key);
 
         if (preg_match('/\d/', $first_key)) {
             if ($this->last_key != $first_key) {

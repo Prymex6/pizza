@@ -592,9 +592,97 @@
                         </div>
                     </div>
                 </div>
+                @elseif ($code == 'statuses')
+                <div class="card">
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="col-sm-11 fs-3 m-auto">
+                                Statusy
+                            </div>
+                            <div class="col-sm-1 pull-right">
+                                <button type="button" class="btn btn-success" onclick="addStatus();">Dodaj</button>
+                                <button type="button" class="btn btn-primary" onclick="$('#setting_edit_form').submit();">Zapisz</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div id="wrapper" class="dataTables_wrapper dt-bootstrap4">
+                            <form action="{{ route('setting.update', 'statuses') }}" method="POST" id="setting_edit_form">
+                                @csrf
+                                @method('PUT')
+                                <div class="row">
+                                    <div class="col-sm-12 col-md-6"></div>
+                                    <div class="col-sm-12 col-md-6"></div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-12 statuses">
+                                        @if (!empty($settings['statuses']))
+                                        @foreach ($settings['statuses'] ?? [] as $key => $setting)
+                                        <div class="status status{{ $loop->iteration }}-box" data-iteration="{{ $loop->iteration }}">
+                                            <div class="row">
+                                                <div class="col-sm-12 col-md-6">
+                                                    <h4><b>Status {{ $loop->iteration }}</b></h4>
+                                                </div>
+                                                <div class="col-sm-12 col-md-6 float-end"><button type="button" class="btn btn-sm btn-danger float-end" onclick="removeStatus('{{ $loop->iteration }}');"><i class="fa fa-trash"></i></button></div>
+                                            </div>
+                                            <div class="mx-2 my-1">
+                                                <div class="row">
+                                                    <div class="col-sm-11">
+                                                        <div class="form-group">
+                                                            <label for="name">Wpisz nazwe</label>
+                                                            <input type="text" class="form-control" id="name" placeholder="Wpisz nazwe" name="statuses[{{ $key }}_name]" value="{{ setting('statuses.' . $key . '_name') }}">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-1">
+                                                        <div class="form-check" style="margin-top: 38px;">
+                                                            <input type="checkbox" class="form-check-input" id="default" name="statuses[{{ $key }}_default]" value="1" @if (setting('statuses.' . $key . '_default' )) checked @endif>
+                                                            <label for="default">
+                                                                domyślny
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @endforeach
+                                    @else
+                                    <div class="status status1-box" data-iteration="1">
+                                        <div class="row">
+                                            <div class="col-sm-12 col-md-6">
+                                                <h4><b>Status 1</b></h4>
+                                            </div>
+                                            <div class="col-sm-12 col-md-6 float-end"><button type="button" class="btn btn-sm btn-danger float-end" onclick="removeStatus('1');"><i class="fa fa-trash"></i></button></div>
+                                        </div>
+                                        <div class="mx-2 my-1">
+                                            <div class="row">
+                                                <div class="col-sm-11">
+                                                    <div class="form-group">
+                                                        <label for="name">Wpisz nazwe</label>
+                                                        <input type="text" class="form-control" id="name" placeholder="Wpisz nazwe" name="statuses[status1_name]">
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-1">
+                                                    <div class="form-check" style="margin-top: 38px;">
+                                                        <input type="checkbox" class="form-check-input" id="default" name="statuses[status1_default]" value="1" checked>
+                                                        <label for="default">
+                                                            domyślny
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @endif
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
                 @endif
             </div>
         </div>
+    </div>
 </section>
 @endsection
 @section('script')
@@ -631,6 +719,11 @@
         $('.promotion-categories').on('change', function() {
             var iteration = $(this).closest('.promotion').data('iteration');
             $('.promotion' + iteration + '-box .promotion-dishes').multiselect("deselectAll", false);
+        });
+
+        $('.status input[type="checkbox"]').on('change', function() {
+            $('.status input[type="checkbox"]').prop('checked', false);
+            $(this).prop('checked', true);
         });
     });
 
@@ -670,6 +763,17 @@
         $('.opening_hours').append('<div class="opening_hour opening_hour' + iteration + '-box" data-iteration="' + iteration + '"><div class="row"><div class="col-sm-12 col-md-6"><h4><b>Dzień ' + iteration + '</b></h4></div><div class="col-sm-12 col-md-6 float-end"><button type="button" class="btn btn-sm btn-danger float-end" onclick="removeOpeningHour(' + iteration + ');"><i class="fa fa-trash"></i></button></div></div><div class="mx-2 my-1"><div class="row"><div class="col-md-4"><div class="form-group"><label for="day">Dzień</label><input type="text" class="form-control" id="day" placeholder="Dzień" name="opening_hours[opening_hour' + iteration + '_day]" ></div></div><div class="col-md-4"><div class="form-group"><label for="open">Otwarcie</label><input type="time" class="form-control" id="open" placeholder="Otwarcie" name="opening_hours[opening_hour' + iteration + '_open]"></div></div><div class="col-md-4"><div class="form-group"><label for="close">Zamknięcie</label><input type="time" class="form-control" id="close" placeholder="Zamknięcie" name="opening_hours[opening_hour' + iteration + '_close]"></div></div></div></div>');
     }
 
+    function addStatus(e) {
+        var iteration = $('.status').last().data('iteration') ?? 0;
+        iteration++;
+        $('.statuses').append('<div class="status status' + iteration + '-box" data-iteration="' + iteration + '"><div class="row"><div class="col-sm-12 col-md-6"><h4><b>Status ' + iteration + '</b></h4></div><div class="col-sm-12 col-md-6 float-end"><button type="button" class="btn btn-sm btn-danger float-end" onclick="removeStatus(' + iteration + ');"><i class="fa fa-trash"></i></button></div></div><div class="mx-2 my-1"><div class="row"><div class="col-sm-11"><div class="form-group"><label for="name">Wpisz nazwe</label><input type="text" class="form-control" id="name" placeholder="Wpisz nazwe" name="statuses[status' + iteration + '_name]"></div></div><div class="col-sm-1"><div class="form-check" style="margin-top: 38px;"><input type="checkbox" class="form-check-input" id="default" name="statuses[status' + iteration + '_default]" value="1"><label for="default">domyślny</label></div></div></div></div></div></div>');
+
+        $('.status input[type="checkbox"]').on('change', function() {
+            $('.status input[type="checkbox"]').prop('checked', false);
+            $(this).prop('checked', true);
+        });
+    }
+
     function removeHeader(iteration) {
         $('.header' + iteration + '-box').remove();
     }
@@ -684,6 +788,15 @@
 
     function removeOpeningHour(iteration) {
         $('.opening_hour' + iteration + '-box').remove();
+    }
+
+    function removeStatus(iteration) {
+        var checked = $('.status' + iteration + '-box').find('input[type="checkbox"]').is(':checked');
+        $('.status' + iteration + '-box').remove();
+
+        if (checked && $('.status').find('input[type="checkbox"]').first()) {
+            $('.status').find('input[type="checkbox"]').first().prop('checked', true);
+        }
     }
 </script>
 @endsection
