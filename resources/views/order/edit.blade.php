@@ -37,13 +37,13 @@
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1 class="m-0">Dodaj zamówienie</h1>
+                <h1 class="m-0">Edytuj zamówienie</h1>
             </div>
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
                     <li class="breadcrumb-item"><a href="#">Strona główna</a></li>
                     <li class="breadcrumb-item">Zamówienia</li>
-                    <li class="breadcrumb-item">Dodaj</li>
+                    <li class="breadcrumb-item">Edytuj</li>
                 </ol>
             </div>
         </div>
@@ -71,20 +71,28 @@
                                     <div class="dishes">
                                         @foreach ($order->dishes as $dish)
                                         <div class="row dish dish{{ $loop->iteration }}-box my-1" data-iteration="{{ $loop->iteration }}">
-                                            <div class="col-sm-4">
-                                                <select class="form-control" name="dishes[{{ $loop->iteration }}][id]">
+                                            <div class="col-sm-3">
+                                                <select class="form-control" name="dishes[{{ $loop->iteration }}][id]" id="dish">
                                                     <option value="" disabled selected>Wybierz danie</option>
                                                     @foreach ($dishes as $value)
                                                     <option value="{{ $value->id }}" data-price="{{ $value->price }}" @if ($value->id == $dish->id) selected @endif>{{ $value->name }}</option>
                                                     @endforeach
                                                 </select>
                                             </div>
-                                            <div class="col-sm-4">
+                                            <div class="col-sm-3">
                                                 <input type="number" class="form-control" id="quantity" placeholder="Wpisz ilość" name="dishes[{{ $loop->iteration }}][pivot][quantity]" step="1" value="{{ $dish->pivot->quantity }}">
                                             </div>
-                                            <div class="col-sm-4">
+                                            <div class="col-sm-3">
+                                                <select class="form-control" name="dishes[{{ $loop->iteration }}][size][name]" id="sizes">
+                                                    <option value="" disabled selected>Brak rozmiarów</option>
+                                                    @foreach ($dish->sizes as $size)
+                                                    <option value="{{ $size->name }}" data-price="{{ $size->price }}" @if($size->name == $dish->pivot->size) selected @endif>{{ $size->name }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <div class="col-sm-3">
                                                 <div class="input-group">
-                                                    <input type="number" class="form-control" id="price" placeholder="Wpisz cenę" name="dishes[{{ $loop->iteration }}][price]" step="0.01" value="{{ $dish->price }}">
+                                                    <input type="number" class="form-control" id="price" placeholder="Wpisz cenę" name="dishes[{{ $loop->iteration }}][price]" step="0.01" value="{{ $dish->pivot->price }}">
                                                     <div class="input-group-btn">
                                                         <button class="btn btn-danger" onclick="removeDish($(this))" type="button"><i class="fa fa-minus"></i></button>
                                                     </div>
@@ -93,18 +101,23 @@
                                         </div>
                                         @endforeach
                                         <div class="row dish dish{{ $order->dishes->count() + 1 }}-box my-1" data-iteration="{{ $order->dishes->count() + 1 }}">
-                                            <div class="col-sm-4">
-                                                <select class="form-control" name="dishes[{{ $order->dishes->count() + 1 }}][id]">
+                                            <div class="col-sm-3">
+                                                <select class="form-control" name="dishes[{{ $order->dishes->count() + 1 }}][id]" id="dish">
                                                     <option value="" disabled selected>Wybierz danie</option>
                                                     @foreach ($dishes as $value)
                                                     <option value="{{ $value->id }}" data-price="{{ $value->price }}">{{ $value->name }}</option>
                                                     @endforeach
                                                 </select>
                                             </div>
-                                            <div class="col-sm-4">
+                                            <div class="col-sm-3">
                                                 <input type="number" class="form-control" id="quantity" placeholder="Wpisz ilość" name="dishes[{{ $order->dishes->count() + 1 }}][pivot][quantity]" step="1">
                                             </div>
-                                            <div class="col-sm-4">
+                                            <div class="col-sm-3">
+                                                <select class="form-control" name="dishes[{{ $order->dishes->count() + 1 }}][size][name]" id="sizes">
+                                                    <option value="" disabled selected>Brak rozmiarów</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-sm-3">
                                                 <div class="input-group">
                                                     <input type="number" class="form-control" id="price" placeholder="Wpisz cenę" name="dishes[{{ $order->dishes->count() + 1 }}][price]" step="0.01">
                                                     <div class="input-group-btn">
@@ -219,7 +232,7 @@
                                         </label>
                                     </div>
                                     <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="payment" id="online_transfer" value="online_transfer" @if ($order->payment == 'online_transfer ') checked @endif>
+                                        <input class="form-check-input" type="radio" name="payment" id="online_transfer" value="online_transfer" @if ($order->payment == 'online_transfer') checked @endif>
                                         <label class="form-check-label" for="online_transfer">
                                             Przelew online
                                         </label>
@@ -257,6 +270,7 @@
 @endsection
 @section('script')
 <script>
+    var showSizes = "{{ route('dish.showSizes') }}";
     $(function() {
         $('input[name="realization"]').on('change', function() {
             if ($('input[name="realization"]:checked').val() == 'reception' || $('input[name="realization"]:checked').val() == 'site') {
@@ -296,10 +310,27 @@
             }
         });
 
-        $('.dish select').on('change', function() {
+        $('.dish #sizes').on('change', function() {
+            var price = $(this).find('option:selected').data('price');
+            $(this).closest('.dish').find('#price').val(price);
+        });
+
+        $('.dish select#dish').on('change', function() {
+            var dish_id = $(this).find('option:selected').val()
             var price = $(this).find('option:selected').data('price');
             $(this).closest('.dish').find('#price').val(price);
             $(this).closest('.dish').find('#quantity').val(1);
+
+            $.ajax({
+                url: showSizes,
+                type: 'GET',
+                data: {
+                    'dish_id': dish_id
+                },
+                success: function(response) {
+                    $(this).closest('.dish').find('#sizes').html(response);
+                }.bind(this),
+            });
         });
     });
 
@@ -311,7 +342,30 @@
             $(this).replaceWith('<button class="btn btn-danger" onclick="removeDish($(this))" type="button"><i class="fa fa-minus"></i></button>');
         });
 
-        $('.dishes').append('<div class="row dish"><div class="col-sm-4"><select class="form-control" name="dish[' + iteration + '][id]"><option value="" disabled selected>Wybierz danie</option>@foreach ($dishes as $dish)<option value="{{ $dish->id }}" data-price="{{ $dish->price }}">{{ $dish->name }}</option>@endforeach</select></div><div class="col-sm-4"><input type="number" class="form-control" id="quantity" placeholder="Wpisz ilość" name="dish[' + iteration + '][quantity]" step="1"></div><div class="col-sm-4"><div class="input-group"><input type="number" class="form-control" id="price" placeholder="Wpisz cenę" name="dish[' + iteration + '][price]" step="0.01"><div class="input-group-btn"><button class="btn btn-success" onclick="addDish($(this))" type="button"><i class="fa fa-plus"></i></button></div></div></div></div>');
+        $('.dishes').append('<div class="row dish dish' + iteration + '-box my-1" data-iteration="' + iteration + '"><div class="col-sm-3"><select class="form-control" name="dishes[' + iteration + '][id]" id="dish"><option value="" disabled selected>Wybierz danie</option>@foreach ($dishes as $dish)<option value="{{ $dish->id }}" data-price="{{ $dish->price }}">{{ $dish->name }}</option>@endforeach</select></div><div class="col-sm-3"><input type="number" class="form-control" id="quantity" placeholder="Wpisz ilość" name="dishes[' + iteration + '][pivot][quantity]" step="1"></div><div class="col-sm-3"><select class="form-control" name="dishes[' + iteration + '][size][name]" id="sizes"><option value="" disabled selected>Brak rozmiarów</option></select></div><div class="col-sm-3"><div class="input-group"><input type="number" class="form-control" id="price" placeholder="Wpisz cenę" name="dishes[' + iteration + '][price]" step="0.01"><div class="input-group-btn"><button class="btn btn-success" onclick="addDish()" type="button"><i class="fa fa-plus"></i></button></div></div></div></div>');
+
+        $('.dish #sizes').on('change', function() {
+            var price = $(this).find('option:selected').data('price');
+            $(this).closest('.dish').find('#price').val(price);
+        });
+
+        $('.dish select#dish').on('change', function() {
+            var dish_id = $(this).find('option:selected').val()
+            var price = $(this).find('option:selected').data('price');
+            $(this).closest('.dish').find('#price').val(price);
+            $(this).closest('.dish').find('#quantity').val(1);
+
+            $.ajax({
+                url: showSizes,
+                type: 'GET',
+                data: {
+                    'dish_id': dish_id
+                },
+                success: function(response) {
+                    $(this).closest('.dish').find('#sizes').html(response);
+                }.bind(this),
+            });
+        });
     }
 
     function removeDish(e) {

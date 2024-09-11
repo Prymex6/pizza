@@ -49,8 +49,10 @@ class OrderController extends Controller
 
         $firstname = array_values($full_name);
         $firstname = array_shift($firstname);
-
-        $request->merge(['firstname' => $firstname, 'lastname' => end($full_name)]);
+        $request->merge(['firstname' => $firstname, 'lastname' => end($full_name), 'status_id' => setting('statuses._default')['status_default']]);
+        if (!$request->status_id) {
+            $request->merge(['status_id' => setting('statuses._default')['status_default']]);
+        }
         $order = Order::create($request->all());
 
         $dishes = $request->dishes;
@@ -60,6 +62,7 @@ class OrderController extends Controller
         }
 
         foreach ($dishes as $dish) {
+            if (empty($dish['id'])) continue;
             $order->dishes()->attach($dish['id'], [
                 'size'          => $dish['size']['name'] ?? '',
                 'price'         => $dish['price'] ? $dish['price'] : $dish['size']['price'],
@@ -90,6 +93,16 @@ class OrderController extends Controller
     }
 
     /**
+     * Display the specified resource.
+     */
+    public function showStatuses(Request $request)
+    {
+        $status_id = $request->input('status_id');
+
+        return view('order.statuses-select', ['status_id' => $status_id]);
+    }
+
+    /**
      * Show the form for editing the specified resource.
      */
     public function edit(Order $order)
@@ -105,6 +118,24 @@ class OrderController extends Controller
     public function update(Request $request, string $id)
     {
         //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function updateStatuses(Request $request)
+    {
+        $order_id = $request->input('order_id');
+        $status_id = $request->input('status_id');
+
+        $order = Order::find($order_id);
+
+        if ($order) {
+            $order->status_id = $status_id;
+            $order->save();
+        }
+
+        return view('order.statuses', ['status_id' => $status_id]);
     }
 
     /**

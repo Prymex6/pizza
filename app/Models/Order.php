@@ -9,11 +9,11 @@ class Order extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['firstname', 'lastname', 'telephone', 'email', 'city', 'time', 'realization', 'street', 'house_number', 'zip_code', 'apartment_number', 'fllor', 'payment', 'note'];
+    protected $fillable = ['firstname', 'lastname', 'telephone', 'email', 'city', 'time', 'realization', 'street', 'house_number', 'zip_code', 'apartment_number', 'fllor', 'payment', 'note', 'status_id', 'hour', 'status_paid'];
 
     public function dishes()
     {
         return $this->belongsToMany(Dish::class, 'order_dish')
-            ->withPivot('quantity');
+            ->withPivot('quantity', 'size', 'price');
     }
 }

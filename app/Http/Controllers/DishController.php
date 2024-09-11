@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
+
 use App\Models\Dish;
 use App\Models\Category;
 use App\Http\Requests\DishRequest;
@@ -52,6 +54,18 @@ class DishController extends Controller
      * Display the specified resource.
      */
     public function show(Dish $dish) {}
+
+    /**
+     * Display the specified resource.
+     */
+    public function showSizes(Request $request)
+    {
+        $dish_id = $request->input('dish_id');
+
+        $dish = Dish::with(['sizes'])->findOrFail($dish_id);
+
+        return view('dish.sizes-select', ['dish' => $dish]);
+    }
 
     /**
      * Show the form for editing the specified resource.

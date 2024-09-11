@@ -10,6 +10,7 @@ use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\CartController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\SaveCurrentRoute;
+use App\Models\Dish;
 
 Route::get('/', [HomeController::class, 'index'])->name('home.index')->middleware([SaveCurrentRoute::class]);
 Route::get('/home', [HomeController::class, 'index'])->name('home.index')->middleware([SaveCurrentRoute::class]);
@@ -25,7 +26,10 @@ Route::delete('/cart/destroy', [CartController::class, 'removeDish'])->name('car
 Route::post('/reservation/store', [ReservationController::class, 'store'])->name('reservation.book');
 Route::post('/order/store', [OrderController::class, 'store'])->name('order.add');
 Route::prefix('/dashboard')->group(function () {
+    Route::get('order/statuses', [OrderController::class, 'showStatuses'])->name('order.showStatuses');
+    Route::put('order/statuses', [OrderController::class, 'updateStatuses'])->name('order.updateStatuses');
     Route::resource('order', OrderController::class)->middleware([SaveCurrentRoute::class]);
+    Route::get('dish/sizes', [DishController::class, 'showSizes'])->name('dish.showSizes');
     Route::resource('dish', DishController::class);
     Route::resource('category', CategoryController::class);
     Route::resource('reservation', ReservationController::class)->middleware([SaveCurrentRoute::class]);

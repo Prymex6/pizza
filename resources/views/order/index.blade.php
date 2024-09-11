@@ -58,6 +58,7 @@
                                                 <th>Sposób realizacji</th>
                                                 <th>Sposób płatności</th>
                                                 <th>Uwagi</th>
+                                                <th>Status</th>
                                                 <th>Akcje</th>
                                             </tr>
                                         </thead>
@@ -74,7 +75,7 @@
                                                     @if ($order->time == 'asap')
                                                     Teraz
                                                     @elseif ($order->time == 'today')
-                                                    {{ $order->hours }}
+                                                    {{ $order->hour }}
                                                     @endif
                                                 </td>
                                                 <td>
@@ -94,9 +95,13 @@
                                                     @elseif ($order->payment == 'online_transfer')
                                                     Przelew online
                                                     @endif
+                                                    @if ($order->status_paid) <span class="text-success">- Opłacone</span> @else <span class="text-danger">- Nieopłacone</span> @endif
                                                 </td>
                                                 <td>
                                                     {{ $order->note }}
+                                                </td>
+                                                <td class="status" data-status_id="{{ $order->status_id }}" data-order_id="{{ $order->id }}">
+                                                    @include('order.statuses', ['status_id' => $order->status_id])
                                                 </td>
                                                 <td>
                                                     <form action="{{ route('order.destroy', $order->id) }}" method="POST" onsubmit="return confirm('Czy na pewno chcesz usunąć ten rekord?');">
@@ -109,7 +114,7 @@
                                             </tr>
                                             @if (!$order->dishes->isEmpty())
                                             <tr>
-                                                <td colspan="11">
+                                                <td colspan="12">
                                                     <table class="table table-bordered table-hover table-dishes">
                                                         <thead>
                                                             <tr>
@@ -124,10 +129,10 @@
                                                             @foreach ($order->dishes as $dish)
                                                             <tr>
                                                                 <td>{{ $loop->iteration }}</td>
-                                                                <td>{{ $dish->name }}</td>
+                                                                <td>{{ $dish->name }}@if ($dish->pivot->size) - {{ $dish->pivot->size }} @endif </td>
                                                                 <td>{{ $dish->ingredients }}</td>
                                                                 <td>{{ $dish->pivot->quantity }}</td>
-                                                                <td>{{ $dish->price }} zł x {{ $dish->pivot->quantity }} = {{ $dish->price * $dish->pivot->quantity }} zł</td>
+                                                                <td>{{ $dish->pivot->price }} zł x {{ $dish->pivot->quantity }} = {{ $dish->pivot->price * $dish->pivot->quantity }} zł</td>
                                                             </tr>
                                                             @endforeach
                                                         </tbody>
@@ -150,4 +155,52 @@
 
         </div>
 </section>
+@endsection
+@section('script')
+<script>
+    var showStatuses = "{{ route('order.showStatuses') }}";
+    var updateStatuses = "{{ route('order.updateStatuses') }}";
+    var token = '@csrf';
+
+    $(function() {
+        $('.btn-edit-status').on('click', function() {
+            let status_id = $(this).closest('.status').data('status_id');
+            $.ajax({
+                url: showStatuses,
+                type: 'GET',
+                data: {
+                    'status_id': status_id
+                },
+                success: function(response) {
+                    $(this).closest('.status').addClass('edit');
+                    $(this).closest('.status').html(response);
+                }.bind(this),
+            });
+        });
+
+        $(document).click(function(event) {
+            if ($('.status.edit').length > 0) {
+                if (!$(event.target).closest('.status').find('select').length) {
+                    let order_id = $('.status.edit').data('order_id');
+                    let status_id = $('.status.edit').find('option:selected').val();
+
+                    $.ajax({
+                        url: updateStatuses,
+                        type: 'PUT',
+                        data: {
+                            '_token': $(token).val(),
+                            '_method': 'PUT',
+                            'order_id': order_id,
+                            'status_id': status_id
+                        },
+                        success: function(response) {
+                            console.log(response);
+                            $('.status.edit').removeClass('edit').html(response);
+                        }
+                    });
+                }
+            }
+        });
+    });
+</script>
 @endsection

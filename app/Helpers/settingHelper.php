@@ -59,9 +59,9 @@ function setting($codeKey = null, $explode = false)
     if (empty($result) && $position !== false && $position <= 0) {
         $result = Setting::where('code', $code)
             ->where('key', 'like', '%' . $key)
-            ->get();
+            ->first();
 
-        return [preg_replace('/\d/', '', $result[$key]) => preg_replace('/\D/', '', $result[$key])];
+        return [preg_replace('/\d/', '', $result['key']) => preg_replace('/\D/', '', $result['key'])];
     }
 
     if (empty($result) && strpos($key, '_') == false) {

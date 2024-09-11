@@ -175,9 +175,9 @@
                 </label>
             </div>
             <div class="col-sm-12">
-                <div class="form-group hours" style="display: none;">
+                <div class="form-group hour" style="display: none;">
                     <hr>
-                    <select class="form-control" name="hours">
+                    <select class="form-control" name="hour">
                         <option value="" disabled selected>Wybierz godzinę</option>
                     </select>
                 </div>
@@ -318,7 +318,7 @@
         });
 
         $('input[name="time"]').on('change', function() {
-            $('select[name="hours"] .option').remove();
+            $('select[name="hour"] .option').remove();
             if ($('input[name="time"]:checked').val() == 'today') {
                 const now = new Date();
                 let startHour = now.getHours();
@@ -335,19 +335,19 @@
                     for (let minute = startMinute; minute < 60; minute += 30) {
                         const formattedHour = hour.toString().padStart(2, '0');
                         const formattedMinute = minute.toString().padStart(2, '0');
-                        $('select[name="hours"]').append(`<option class="option" value="${formattedHour}:${formattedMinute}">${formattedHour}:${formattedMinute}</option>`);
+                        $('select[name="hour"]').append(`<option class="option" value="${formattedHour}:${formattedMinute}">${formattedHour}:${formattedMinute}</option>`);
                     }
                     startMinute = 0; // Reset minute to 0 for the next hour loop
                 }
 
-                $('.hours').show();
+                $('.hour').show();
             } else {
-                $('.hours').hide();
+                $('.hour').hide();
             }
         });
 
         setTimeout(function() {
-            $('select[name="hours"]').niceSelect('destroy');
+            $('select[name="hour"]').niceSelect('destroy');
         }, 1000);
 
         $('.quantity-box button').on('click', function() {
