@@ -12,6 +12,50 @@
 
     @vite('resources/css/style.css')
     @yield('style')
+    <style>
+        .dropdown-menu {
+            min-width: 400px;
+            background-color: #222831;
+            padding: 20px;
+            text-align: left;
+            color: #fff;
+        }
+
+        .dropdown-menu-center {
+            left: 50% !important;
+            right: auto !important;
+            transform: translate(-50%, 0) !important;
+        }
+
+        .btn-box {
+            display: flex;
+            justify-content: center;
+        }
+
+        .register {
+            text-align: right;
+        }
+
+        .header {
+            padding: 10px;
+            text-transform: uppercase;
+            text-align: center;
+            font-weight: 700;
+            font-size: 25px;
+        }
+
+        hr.line {
+            border-top: 1px solid #fff;
+        }
+
+        .register a {
+            text-decoration: underline;
+        }
+
+        .register a:hover {
+            color: #ffbe33;
+        }
+    </style>
 </head>
 
 <body class="layout-fixed {{ Route::currentRouteName() != 'home.index' ? 'sub_page' : '' }}">
@@ -51,9 +95,30 @@
                                 </li>
                             </ul>
                             <div class="user_option">
-                                <a href="{{ route('login') }}" class="user_link">
-                                    <i class="fa fa-user" aria-hidden="true"></i>
-                                </a>
+                                @auth
+                                <ul class="navbar-nav mx-auto">
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="{{ route('order.index') }}">Panel</a>
+                                    </li>
+                                </ul>
+                                @else
+                                <div class="dropdown">
+                                    <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="fa fa-user" aria-hidden="true"></i>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-center">
+                                        <div class="header">
+                                            Logowanie
+                                        </div>
+                                        <hr class="line">
+                                        @include('home.login-form')
+                                        <hr class="line">
+                                        <div class="register">
+                                            Nie masz konta?<a href="{{ route('register') }}">Zarejestruj się</a>
+                                        </div>
+                                    </ul>
+                                </div>
+                                @endauth
                                 <a href="{{ route('cart.index') }}" class="cart_link">
                                     <i class="fa fa-shopping-cart" aria-hidden="true"></i>
                                 </a>

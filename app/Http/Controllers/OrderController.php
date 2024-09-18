@@ -2,14 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\Order;
-use App\Models\Dish;
+use App\Http\Resources\OrderResource;
 use App\Models\Cart;
-
-use Carbon\Carbon;
+use App\Models\Dish;
+use App\Models\Order;
 
 use App\Services\cartService;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 class OrderController extends Controller
 {
@@ -25,7 +27,15 @@ class OrderController extends Controller
      */
     public function index()
     {
-        $orders = Order::paginate(20);
+        if (Gate::allows('admin')) {
+            $orders = Order::orderBy('id', 'desc')->paginate(20);
+        } else {
+            $orders = Auth::user()->orders ?? collect([]);
+        }
+
+        if ($orders) {
+            $orders = OrderResource::collection($orders);
+        }
 
         return view('order.index', ['orders' => $orders]);
     }
@@ -49,9 +59,12 @@ class OrderController extends Controller
 
         $firstname = array_values($full_name);
         $firstname = array_shift($firstname);
-        $request->merge(['firstname' => $firstname, 'lastname' => end($full_name), 'status_id' => setting('statuses._default')['status_default']]);
+        $request->merge(['firstname' => $firstname, 'lastname' => end($full_name)]);
         if (!$request->status_id) {
             $request->merge(['status_id' => setting('statuses._default')['status_default']]);
+        }
+        if (!$request->user_id) {
+            $request->merge(['user_id' => Auth::user()->id ?? null]);
         }
         $order = Order::create($request->all());
 

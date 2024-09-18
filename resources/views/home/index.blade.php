@@ -227,7 +227,11 @@
                 <div class="col-md-6">
                     <div class="box">
                         <div class="img-box">
-                            <img src="images/o1.jpg" alt="">
+                            @if (!empty(setting('promotions.' . $key . '_image')))
+                            <img src="{{ Storage::url(setting('promotions.' . $key . '_image')) }}" alt="Zdjęcia dania">
+                            @else
+                            <img src="{{ asset('additional/placeholder.png') }}" alt="Zdjęcia dania">
+                            @endif
                         </div>
                         <div class="detail-box">
                             <h5>
@@ -265,11 +269,12 @@
                 <button class="nav-link active" id="all-tab" data-bs-toggle="tab" data-bs-target="#all" role="tab">Wszystko</button>
             </li>
             @foreach ($categories as $category)
-            <li class="nav-item" role="presentation">
+            @if ($category->dishes->count() < 1) @continue @endif
+                <li class="nav-item" role="presentation">
                 <button class="nav-link" id="{{ $category->name }}-tab" data-bs-toggle="tab" data-bs-target="#{{ $category->name }}" role="tab">{{ $category->name }}
                 </button>
-            </li>
-            @endforeach
+                </li>
+                @endforeach
         </ul>
 
         <div class="filters-content tab-content" id="menuContent">
@@ -279,7 +284,11 @@
                     <div class="box">
                         <div>
                             <div class="img-box">
-                                <img src="images/f1.png" alt="">
+                                @if ($dish->image)
+                                <img src="{{ Storage::url($dish->image) }}" alt="Zdjęcia dania">
+                                @else
+                                <img src="{{ asset('additional/placeholder.png') }}" alt="Zdjęcia dania">
+                                @endif
                             </div>
                             <div class="detail-box">
                                 <h5>
@@ -314,13 +323,18 @@
                 @endforeach
             </div>
             @foreach ($categories as $category)
-            <div class="row grid tab-pane fade" id="{{ $category->name }}" role="tabpanel">
+            @if ($category->dishes->count() < 1) @continue @endif
+                <div class="row grid tab-pane fade" id="{{ $category->name }}" role="tabpanel">
                 @foreach ($category->dishes as $dish)
                 <div class="col-sm-6 col-lg-4">
                     <div class="box">
                         <div>
                             <div class="img-box">
-                                <img src="images/f1.png" alt="">
+                                @if ($dish->image)
+                                <img src="{{ Storage::url($dish->image) }}" alt="Zdjęcia dania">
+                                @else
+                                <img src="{{ asset('additional/placeholder.png') }}" alt="Zdjęcia dania">
+                                @endif
                             </div>
                             <div class="detail-box">
                                 <h5>
@@ -349,9 +363,9 @@
                 </div>
                 @endif
                 @endforeach
-            </div>
-            @endforeach
         </div>
+        @endforeach
+    </div>
     </div>
 </section>
 
@@ -470,7 +484,11 @@
                             </p>
                         </div>
                         <div class="img-box">
-                            <img src="images/client1.jpg" alt="" class="box-img">
+                            @if (!empty(setting('opinions.' . $key . '_image')))
+                            <img src="{{ Storage::url(setting('opinions.' . $key . '_image')) }}" alt="Zdjęcia dania">
+                            @else
+                            <img src="{{ asset('additional/placeholder.png') }}" alt="Zdjęcia dania">
+                            @endif
                         </div>
                     </div>
                 </div>

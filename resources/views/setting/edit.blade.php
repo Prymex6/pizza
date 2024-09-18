@@ -1,4 +1,38 @@
 @extends('layouts.admin')
+@section('style')
+<style>
+    .custom-file-button {
+        input[type="file"] {
+            margin-right: -2px !important;
+
+            &::-webkit-file-upload-button {
+                display: none;
+            }
+
+            &::file-selector-button {
+                display: none;
+            }
+        }
+
+        &:hover {
+            label {
+                background-color: #dde0e3;
+                cursor: pointer;
+            }
+        }
+    }
+
+    .image {
+        margin: 10px 0;
+
+    }
+
+    .image img {
+        width: 150px;
+        height: 150px;
+    }
+</style>
+@endsection
 @section('content')
 <div class="content-header">
     <div class="container-fluid">
@@ -200,7 +234,7 @@
                     </div>
                     <div class="card-body">
                         <div id="wrapper" class="dataTables_wrapper dt-bootstrap4">
-                            <form action="{{ route('setting.update', 'promotions') }}" method="POST" id="setting_edit_form">
+                            <form action="{{ route('setting.update', 'promotions') }}" method="POST" enctype="multipart/form-data" id="setting_edit_form">
                                 @csrf
                                 @method('PUT')
                                 <div class="row">
@@ -247,6 +281,20 @@
                                                     <label for="title">Wpisz procent</label>
                                                     <input type="number" class="form-control promotion-percent" id="percent" placeholder="Wpisz procent" name="promotions[{{$key}}_percent]" value="{{ setting('promotions.' . $key . '_percent') }}" min="1" max="100">
                                                 </div>
+                                                <div class="form-group">
+                                                    <label for="image">Wybierz Zdjęcie</label>
+                                                    @if (setting('promotions.' . $key . '_image'))
+                                                    <div class="image">
+                                                        <img src="{{ Storage::url(setting('promotions.' . $key . '_image')) }}" alt="Zdjęcia dania">
+                                                        <button type="button" class="btn btn-sm btn-danger"><i class="fa fa-solid fa-remove"></i></button>
+                                                    </div>
+                                                    @endif
+                                                    <div class="input-group custom-file-button">
+                                                        <input type="file" class="form-control" id="image" name="promotions[{{$key}}_image]">
+                                                        <input type="hidden" id="path" name="promotions[{{$key}}_path]" value="{{ setting('promotions.' . $key . '_image') }}">
+                                                        <label class="input-group-text" for="image">Wybierz plik</label>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                         @endforeach
@@ -266,7 +314,7 @@
                                                 </div>
                                                 <div class="form-group">
                                                     <label for="dishes">Wybierz dania</label>
-                                                    <select class="form-control promotion-dishes" id="dishes" name="promotions[promotion1_dishes]" multiple data-coreui-search="true">
+                                                    <select class="form-control promotion-dishes" id="dishes" name="promotions[promotion1_dishes]" multiple data-live-search="true">
                                                         @foreach ($dishes as $dish)
                                                         <option value="{{ $dish->id }}">{{ $dish->name }}</option>
                                                         @endforeach
@@ -274,7 +322,7 @@
                                                 </div>
                                                 <div class="form-group">
                                                     <label for="dishes">Wybierz kategorie</label>
-                                                    <select class="form-control promotion-categories" id="categories" name="promotions[promotion1_categories]" multiple data-coreui-search="true">
+                                                    <select class="form-control promotion-categories" id="categories" name="promotions[promotion1_categories]" multiple data-live-search="true">
                                                         @foreach ($categories as $category)
                                                         <option value="{{ $category->id }}">{{ $category->name }}</option>
                                                         @endforeach
@@ -287,6 +335,14 @@
                                                 <div class="form-group">
                                                     <label for="title">Wpisz procent</label>
                                                     <input type="number" class="form-control promotion-percent" id="percent" placeholder="Wpisz procent" name="promotions[promotion1_percent]" min="1" max="100">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="image">Wybierz Zdjęcie</label>
+                                                    <div class="input-group custom-file-button">
+                                                        <input type="file" class="form-control" id="image" name="promotions[promotion1_image]">
+                                                        <input type="hidden" id="path" name="promotions[promotion1_path]" value="">
+                                                        <label class="input-group-text" for="image">Wybierz plik</label>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -368,7 +424,7 @@
                     </div>
                     <div class="card-body">
                         <div id="wrapper" class="dataTables_wrapper dt-bootstrap4">
-                            <form action="{{ route('setting.update', 'opinions') }}" method="POST" id="setting_edit_form">
+                            <form action="{{ route('setting.update', 'opinions') }}" method="POST" enctype="multipart/form-data" id="setting_edit_form">
                                 @csrf
                                 @method('PUT')
                                 <div class="row">
@@ -409,6 +465,20 @@
                                                     <label for="rate">Wpisz ocenę</label>
                                                     <input type="number" class="form-control" id="rate" placeholder="Wpisz ocenę" name="opinions[{{ $key }}_rate]" value="{{ setting('opinions.' . $key . '_rate') }}" min="1" max="5">
                                                 </div>
+                                                <div class="form-group">
+                                                    <label for="image">Wybierz Zdjęcie</label>
+                                                    @if (setting('opinions.' . $key . '_image'))
+                                                    <div class="image">
+                                                        <img src="{{ Storage::url(setting('opinions.' . $key . '_image')) }}" alt="Zdjęcia dania">
+                                                        <button type="button" class="btn btn-sm btn-danger"><i class="fa fa-solid fa-remove"></i></button>
+                                                    </div>
+                                                    @endif
+                                                    <div class="input-group custom-file-button">
+                                                        <input type="file" class="form-control" id="image" name="opinions[{{$key}}_image]">
+                                                        <input type="hidden" id="path" name="opinions[{{$key}}_path]" value="{{ setting('opinions.' . $key . '_image') }}">
+                                                        <label class="input-group-text" for="image">Wybierz plik</label>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                         @endforeach
@@ -442,6 +512,14 @@
                                                 <div class="form-group">
                                                     <label for="rate">Wpisz ocenę</label>
                                                     <input type="number" class="form-control" id="rate" placeholder="Wpisz ocenę" name="opinions[opinion1_rate]" min="1" max="5">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="image">Wybierz Zdjęcie</label>
+                                                    <div class="input-group custom-file-button">
+                                                        <input type="file" class="form-control" id="image" name="opinions[opinion1_image]">
+                                                        <input type="hidden" id="path" name="opinions[opinion1_image]" value="">
+                                                        <label class="input-group-text" for="image">Wybierz plik</label>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -687,16 +765,28 @@
 @endsection
 @section('script')
 <script>
-    $(document).ready(function() {
-        if ($('.multiselect').length > 0) {
-            $('#dishes, #categories').multiselect({
-                includeSelectAllOption: true,
-                buttonWidth: '100%'
-            });
-        }
+    let programmaticChange = false;
+    $(function() {
+        $('.promotion .image button').on('click', function() {
+            var iteration = $(this).closest('.promotion').data('iteration') ?? 0;
+            $('.promotion' + iteration + '-box').find('.image').remove();
+            $('.promotion' + iteration + '-box').find('#path').val('');
+        });
+
+        $('.opinion .image button').on('click', function() {
+            var iteration = $(this).closest('.opinion').data('iteration') ?? 0;
+            $('.opinion' + iteration + '-box').find('.image').remove();
+            $('.opinion' + iteration + '-box').find('#path').val('');
+        });
+
+        $('.promotion #dishes, .promotion #categories').selectpicker({
+            includeSelectAllOption: true,
+            buttonWidth: '100%'
+        });
 
         $('.promotion-price').on('keyup', function() {
             if ($('.promotion-price').val()) {
+                $('.promotion-percent').val('');
                 $('.promotion-percent').attr('readonly', true);
             } else {
                 $('.promotion-percent').attr('readonly', false);
@@ -705,20 +795,32 @@
 
         $('.promotion-percent').on('keyup', function() {
             if ($('.promotion-percent').val()) {
+                $('.promotion-price').val('');
                 $('.promotion-price').attr('readonly', true);
             } else {
                 $('.promotion-price').attr('readonly', false);
             }
         });
 
-        $('.promotion-dishes').on('change', function() {
+        $('.promotion-dishes select').on('change', function() {
             var iteration = $(this).closest('.promotion').data('iteration');
-            $('.promotion' + iteration + '-box .promotion-categories').multiselect("deselectAll", false);
+            console.log(programmaticChange);
+            if (!programmaticChange) {
+                programmaticChange = true;
+                $('.promotion' + iteration + '-box .promotion-categories').selectpicker('deselectAll');
+            }
+
+            programmaticChange = false;
         });
 
-        $('.promotion-categories').on('change', function() {
+        $('.promotion-categories select').on('change', function() {
             var iteration = $(this).closest('.promotion').data('iteration');
-            $('.promotion' + iteration + '-box .promotion-dishes').multiselect("deselectAll", false);
+            if (!programmaticChange) {
+                programmaticChange = true;
+                $('.promotion' + iteration + '-box .promotion-dishes').selectpicker('deselectAll');
+            }
+
+            programmaticChange = false;
         });
 
         $('.status input[type="checkbox"]').on('change', function() {
@@ -737,15 +839,9 @@
     function addPromotion(e) {
         var iteration = $('.promotion').last().data('iteration') ?? 0;
         iteration++;
-        $('.promotions').append('<div class="promotion promotion' + iteration +
-            '-box" data-iteration="' + iteration +
-            '"><div class="row"><div class="col-sm-12 col-md-6"><h4><b>Nagłówek ' + iteration +
-            '</b></h4></div><div class="col-sm-12 col-md-6 float-end"><button type="button"class="btn btn-sm btn-danger float-end" onclick="removePromotion(' + iteration + ');"><i class="fa fa-trash"></i></button></div></div><div class="mx-2 my-1"><div class="form-group"><label for="title">Wpisz nazwę</label><input type="text" class="form-control" id="name" placeholder="Wpisz nazwę" name="promotions[promotion' + iteration +
-            '_name]"></div><div class="form-group"><label for="dishes">Wybierz dania</label><select class="form-control" id="dishes" name="promotions[promotion' + iteration +
-            '_dishes]" multiple data-coreui-search="true">@foreach($dishes as $dish) <option value = "{{$dish->id}}" >{{$dish->name}}</option>@endforeach</select></div ><div class="form-group"><label for = "dishes" > Wybierz kategorie </label><select class="form-control" id="categories" name="promotions[promotion' + iteration + '_categories]" multiple data-coreui-search="true">@foreach($categories as $category)<option value="{{ $category->id }}">{{$category->name}}</option>@endforeach</select></div><div class="form-group"><label for="title">Wpisz cenę</label><input type="number" class="form-control" id = "price" placeholder = "Wpisz cenę" name="promotions[promotion' + iteration + '_price]" step="0.01"></div><div class="form-group"><label for="title">Wpisz procent</label><input type="number" class="form-control" id="percent" placeholder="Wpisz procent" name="promotions[promotion' + iteration +
-            '_percent]" min="1" max="100"></div></div></div>');
+        $('.promotions').append('<div class="promotion promotion' + iteration + '-box" data-iteration="' + iteration + '"><div class="row"><div class="col-sm-12 col-md-6"><h4><b>Nagłówek ' + iteration + '</b></h4></div><div class="col-sm-12 col-md-6 float-end"><button type="button"class="btn btn-sm btn-danger float-end" onclick="removePromotion(' + iteration + ');"><i class="fa fa-trash"></i></button></div></div><div class="mx-2 my-1"><div class="form-group"><label for="title">Wpisz nazwę</label><input type="text" class="form-control" id="name" placeholder="Wpisz nazwę" name="promotions[promotion' + iteration + '_name]"></div><div class="form-group"><label for="dishes">Wybierz dania</label><select class="form-control" id="dishes" name="promotions[promotion' + iteration + '_dishes]" multiple data-coreui-search="true">@foreach($dishes as $dish) <option value = "{{$dish->id}}" >{{$dish->name}}</option>@endforeach</select></div ><div class="form-group"><label for = "dishes" > Wybierz kategorie </label><select class="form-control" id="categories" name="promotions[promotion' + iteration + '_categories]" multiple data-coreui-search="true">@foreach($categories as $category)<option value="{{ $category->id }}">{{$category->name}}</option>@endforeach</select></div><div class="form-group"><label for="title">Wpisz cenę</label><input type="number" class="form-control" id = "price" placeholder = "Wpisz cenę" name="promotions[promotion' + iteration + '_price]" step="0.01"></div><div class="form-group"><label for="title">Wpisz procent</label><input type="number" class="form-control" id="percent" placeholder="Wpisz procent" name="promotions[promotion' + iteration + '_percent]" min="1" max="100"></div><div class="form-group"><label for="image">Wybierz Zdjęcie</label><div class="input-group custom-file-button"><input type="file" class="form-control" id="image" name="promotions[promotion' + iteration + '_image]"><input type="hidden" id="path" name="promotions[promotion' + iteration + '_path]" value=""><label class="input-group-text" for="image">Wybierz plik</label></div></div></div></div>');
 
-        $('#dishes, #categories').multiselect({
+        $('.promotion #dishes, .promotion #categories').selectpicker({
             includeSelectAllOption: true,
             buttonWidth: '100%'
         });
@@ -754,7 +850,7 @@
     function addOpinion(e) {
         var iteration = $('.opinion').last().data('iteration') ?? 0;
         iteration++;
-        $('.opinions').append('<div class="opinion opinion' + iteration + '-box" data-iteration="' + iteration + '"><div class="row"><div class="col-sm-12 col-md-6"><h4><b>Opinia ' + iteration + '</b></h4></div><div class="col-sm-12 col-md-6 float-end"><button type="button" class="btn btn-sm btn-danger float-end" onclick="removeOpinion(' + iteration + ');"><i class="fa fa-trash"></i></button></div></div><div class="mx-2 my-1"><div class="row"><div class="col-md-6"><div class="form-group"><label for="firstname">Wpisz imie</label><input type="text" class="form-control" id="firstname" placeholder="Wpisz imie" name="opinions[opinion' + iteration + '_firstname]"></div></div><div class="col-md-6"><div class="form-group"><label for="lastname">Wpisz Nazwisko</label><input type="text" class="form-control" id="lastname" placeholder="Wpisz nazwisko" name="opinions[opinion' + iteration + '_lastname]"></div></div></div><div class="form-group"><label for="opinion">Wpisz opinie</label><textarea class="form-control" id="opinion" placeholder="Wpisz opinie" name="opinions[opinion' + iteration + '_opinion]"></textarea></div><div class="form-group"><label for="rate">Wpisz ocenę</label><input type="number" class="form-control" id="rate" placeholder="Wpisz ocenę" name="opinions[opinion' + iteration + '_rate]" min="1" max="5"></div></div></div>');
+        $('.opinions').append('<div class="opinion opinion' + iteration + '-box" data-iteration="' + iteration + '"><div class="row"><div class="col-sm-12 col-md-6"><h4><b>Opinia ' + iteration + '</b></h4></div><div class="col-sm-12 col-md-6 float-end"><button type="button" class="btn btn-sm btn-danger float-end" onclick="removeOpinion(' + iteration + ');"><i class="fa fa-trash"></i></button></div></div><div class="mx-2 my-1"><div class="row"><div class="col-md-6"><div class="form-group"><label for="firstname">Wpisz imie</label><input type="text" class="form-control" id="firstname" placeholder="Wpisz imie" name="opinions[opinion' + iteration + '_firstname]"></div></div><div class="col-md-6"><div class="form-group"><label for="lastname">Wpisz Nazwisko</label><input type="text" class="form-control" id="lastname" placeholder="Wpisz nazwisko" name="opinions[opinion' + iteration + '_lastname]"></div></div></div><div class="form-group"><label for="opinion">Wpisz opinie</label><textarea class="form-control" id="opinion" placeholder="Wpisz opinie" name="opinions[opinion' + iteration + '_opinion]"></textarea></div><div class="form-group"><label for="rate">Wpisz ocenę</label><input type="number" class="form-control" id="rate" placeholder="Wpisz ocenę" name="opinions[opinion' + iteration + '_rate]" min="1" max="5"></div><div class="form-group"><label for="image">Wybierz Zdjęcie</label><div class="input-group custom-file-button"><input type="file" class="form-control" id="image" name="opinions[opinion' + iteration + '_image]"><input type="hidden" id="path" name="opinions[opinion' + iteration + '_image]" value=""><label class="input-group-text" for="image">Wybierz plik</label></div></div></div></div>');
     }
 
     function addOpenHour(e) {

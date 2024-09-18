@@ -21,6 +21,16 @@
             }
         }
     }
+
+    .image {
+        margin: 10px 0;
+
+    }
+
+    .image img {
+        width: 150px;
+        height: 150px;
+    }
 </style>
 @endsection
 @section('content')
@@ -55,7 +65,7 @@
                     </div>
                     <div class="card-body">
                         <div id="wrapper" class="dataTables_wrapper dt-bootstrap4">
-                            <form action="{{ route('dish.update', $dish->id) }}" method="POST" id="dish_edit_form">
+                            <form action="{{ route('dish.update', $dish->id) }}" method="POST" enctype="multipart/form-data" id="dish_edit_form">
                                 @csrf
                                 @method('PUT')
                                 <div class="row">
@@ -139,10 +149,22 @@
                                             </div>
                                         </div>
                                         <div class="form-group">
-                                            <label for="file">Wybierz Zdjęcie</label>
+                                            <label for="image">Wybierz Zdjęcie</label>
+                                            @if ($dish->image)
+                                            <div class="image">
+                                                <img src="{{ Storage::url($dish->image) }}" alt="Zdjęcia dania">
+                                                <button class="btn btn-sm btn-danger"><i class="fa fa-solid fa-remove"></i></button>
+                                            </div>
+                                            @endif
                                             <div class="input-group custom-file-button">
-                                                <input type="file" class="form-control" id="image" name="image">
+                                                <input type="file" class="form-control @error('image') is-invalid @enderror" id="image" name="image">
+                                                <input type="hidden" name="path" value="{{ $dish->image }}">
                                                 <label class="input-group-text" for="image">Wybierz plik</label>
+                                                @error('image')
+                                                <div class="invalid-feedback">
+                                                    {{ $message }}
+                                                </div>
+                                                @enderror
                                             </div>
                                         </div>
                                     </div>
@@ -160,6 +182,13 @@
 @endsection
 @section('script')
 <script>
+    $(function() {
+        $('.image button').on('click', function() {
+            $('.image').remove();
+            $('input[name="path"]').val('');
+        });
+    });
+
     function addIngredients() {
         $('.ingredients').first().before('<div class="ingredients"><div class="input-group"><input type="text" class="form-control" id="ingredients" placeholder="Wpisz składnik"><div class="input-group-btn"><button class="btn btn-danger" onclick="removeIngredients($(this))" type="button"><i class="fa fa-remove"></i></button></div></div></div>');
     }

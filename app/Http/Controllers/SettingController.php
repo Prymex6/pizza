@@ -42,7 +42,7 @@ class SettingController extends Controller
      */
     public function update(Request $request, String $code)
     {
-        $this->settingService->update($request->input($code), $code);
+        $this->settingService->update(array_merge($request->input($code), $request->file($code) ?? []), $code);
 
         return redirect()->route('setting.index')->with('success', 'Ustawienia zostały zaaktualizowane!');
     }

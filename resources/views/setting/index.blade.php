@@ -1,4 +1,15 @@
 @extends('layouts.admin')
+<style>
+    .image {
+        margin: 10px 0;
+
+    }
+
+    .image img {
+        width: 50px;
+        height: 50px;
+    }
+</style>
 @section('content')
 <div class="content-header">
     <div class="container-fluid">
@@ -141,6 +152,11 @@
                                     @foreach ($settings['promotions'] ?? [] as $key => $setting)
                                     <h4><b>Promocja {{ $loop->iteration }}</b></h4>
                                     <div class="mx-2 my-1">
+                                        @if (setting('promotions.' . $key . '_image'))
+                                        <div class="image">
+                                            <img src="{{ Storage::url(setting('promotions.' . $key . '_image')) }}" alt="Zdjęcia dania">
+                                        </div>
+                                        @endif
                                         @if (setting('promotions.' . $key . '_name'))<p class="text-start"><b>Nazwa</b>: {{ setting('promotions.' . $key . '_name') }}</p>@endif
                                         @if (setting('promotions.' . $key . '_dishes'))<p class="text-start"><b>Dania</b>: {{ setting('promotions.' . $key . '_dishes', true) }}</p>@endif
                                         @if (setting('promotions.' . $key . '_categories'))<p class="text-start"><b>Kategorie</b>: {{ setting('promotions.' . $key . '_categories', true) }}</p>@endif
@@ -219,6 +235,11 @@
                                     @foreach ($settings['opinions'] ?? [] as $key => $setting)
                                     <h4><b>Opinia {{ $loop->iteration }}</b></h4>
                                     <div class="mx-2 my-1">
+                                        @if (setting('opinions.' . $key . '_image'))
+                                        <div class="image">
+                                            <img src="{{ Storage::url(setting('opinions.' . $key . '_image')) }}" alt="Zdjęcia dania">
+                                        </div>
+                                        @endif
                                         @if (setting('opinions.' . $key . '_firstname'))<p class="text-start"><b>Imie i nazwisko</b>: {{ setting('opinions.' . $key . '_firstname') }} {{ setting('opinions.' . $key . '_lastname') }}</p>@endif
                                         @if (setting('opinions.' . $key . '_opinion'))<p class="text-start"><b>Opinia</b>: {{ setting('opinions.' . $key . '_opinion', true) }}</p>@endif
                                         @if (setting('opinions.' . $key . '_rate'))<p class="text-start"><b>Ocena</b>: {{ setting('opinions.' . $key . '_rate') }}</p>@endif

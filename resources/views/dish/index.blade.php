@@ -1,4 +1,20 @@
 @extends('layouts.admin')
+@section('style')
+<style>
+    table td {
+        vertical-align: middle !important;
+    }
+
+    table td.image {
+        text-align: center;
+    }
+
+    .image img {
+        width: 50px;
+        height: 50px;
+    }
+</style>
+@endsection
 @section('content')
 <div class="content-header">
     <div class="container-fluid">
@@ -40,6 +56,7 @@
                                         <thead>
                                             <tr>
                                                 <th>#</th>
+                                                <th>Zdjęcie</th>
                                                 <th>Nazwa</th>
                                                 <th>Opis</th>
                                                 <th>Składniki</th>
@@ -52,6 +69,13 @@
                                             @foreach ($dishes ?? [] as $dish)
                                             <tr class="{{ $loop->index / 2 == 0 ? 'odd' : 'even' }}">
                                                 <td>{{ ($dishes->currentPage() - 1) * $dishes->count() + $loop->iteration }}</td>
+                                                <td class="image">
+                                                    @if ($dish->image)
+                                                    <img src="{{ Storage::url($dish->image) }}" alt="Zdjęcia dania">
+                                                    @else
+                                                    <img src="{{ asset('additional/placeholder.png') }}" alt="Zdjęcia dania">
+                                                    @endif
+                                                </td>
                                                 <td>{{ $dish->name }}</td>
                                                 <td>{{ $dish->description }}</td>
                                                 <td>{{ $dish->ingredients }}</td>

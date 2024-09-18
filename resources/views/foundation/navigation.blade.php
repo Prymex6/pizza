@@ -1,6 +1,5 @@
 <!-- Navbar -->
 <nav class="main-header navbar navbar-expand navbar-black navbar-dark">
-
   <ul class="navbar-nav">
     <li class="nav-item">
       <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
@@ -18,21 +17,18 @@
 
   <ul class="navbar-nav ml-auto">
     <li class="nav-item dropdown">
-      <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown1" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        {{ Auth::user()->name }}
+      <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+        {{ Auth::user()->login }}
       </a>
-      <div class="dropdown-menu" aria-labelledby="navbarDropdown1">
+      <ul class="dropdown-menu" style="margin-left: -17px;min-width: 100px!important;">
         <form method="POST" action="{{ route('logout') }}">
           @csrf
-          <x-responsive-nav-link class="dropdown-item" :href="route('logout')" onclick="event.preventDefault();this.closest('form').submit();">
-            {{ __('Log Out') }}
-          </x-responsive-nav-link>
+          <li><button class="dropdown-item" type="submit">{{ __('Wyloguj się') }}</button></li>
         </form>
-      </div>
+      </ul>
     </li>
 </nav>
 <!-- /.navbar -->
-
 <!-- Main Sidebar Container -->
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
   <!-- Brand Logo -->
@@ -51,6 +47,7 @@
       <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu">
         <!-- Add icons to the links using the .nav-icon class
              with font-awesome or any other icon font library -->
+        @can('admin')
         <li class="nav-item">
           <a href="{{ route('dish.index') }}" class="nav-link{{ Route::is('dish.index') ? ' active' : '' }}">
             <i class="nav-icon fas fa-tachometer-alt"></i>
@@ -67,6 +64,7 @@
             </p>
           </a>
         </li>
+        @endcan
         <li class="nav-item">
           <a href="{{ route('order.index') }}" class="nav-link{{ Route::is('order.index') ? ' active' : '' }}">
             <i class="nav-icon fa-solid fa-cart-shopping"></i>
@@ -83,6 +81,15 @@
             </p>
           </a>
         </li>
+        @can('admin')
+        <li class="nav-item">
+          <a href="{{ route('user.index') }}" class="nav-link{{ Route::is('user.index') ? ' active' : '' }}">
+            <i class="nav-icon fa-solid fa-user"></i>
+            <p>
+              {{ __('Użytkownicy') }}
+            </p>
+          </a>
+        </li>
         <li class="nav-item">
           <a href="{{ route('setting.index') }}" class="nav-link{{ Route::is('setting.index') ? ' active' : '' }}">
             <i class="nav-icon fa-solid fa-gear"></i>
@@ -91,6 +98,7 @@
             </p>
           </a>
         </li>
+        @endcan
       </ul>
     </nav>
     <!-- /.sidebar-menu -->

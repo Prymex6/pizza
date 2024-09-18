@@ -113,8 +113,8 @@ a:focus {
 .bg-box img {
   width: 100%;
   height: 100%;
-  -o-object-fit: cover;
-     object-fit: cover;
+  -o-object-fit: cover; 
+  object-fit: cover;
 }
 
 .sub_page .hero_area {
@@ -698,7 +698,7 @@ a:focus {
   font-size: 16px;
 }
 
-.book_section .form_container button {
+.book_section .form_container button, .btn-login {
   margin-top: 15px;
   border: none;
   text-transform: uppercase;
@@ -712,7 +712,7 @@ a:focus {
   border: none;
 }
 
-.book_section .form_container button:hover {
+.book_section .form_container button:hover, .btn-login:hover {
   background-color: #e69c00;
 }
 

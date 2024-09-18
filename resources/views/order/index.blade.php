@@ -3,6 +3,7 @@
 <style>
     .table-dishes tr {
         background-color: #eee;
+        --bs-table-bg: #eee;
     }
 </style>
 @endsection
@@ -27,6 +28,7 @@
         <div class="row">
             <div class="col-12">
                 <div class="card">
+                    @can('admin')
                     <div class="card-header">
                         <div class="row">
                             <div class="col-sm-11"></div>
@@ -35,6 +37,7 @@
                             </div>
                         </div>
                     </div>
+                    @endcan
                     <div class="card-body">
                         <div id="wrapper" class="dataTables_wrapper dt-bootstrap4">
                             <div class="row">
@@ -43,12 +46,14 @@
                             </div>
                             <div class="row">
                                 <div class="col-sm-12">
+                                    @if ($orders->isNotEmpty())
                                     <table class="table table-bordered table-hover dataTable dtr-inline" style="margin-bottom: 0;">
                                         @foreach ($orders ?? [] as $order)
                                         @if ($loop->index == 0)
                                         <thead>
                                             <tr>
                                                 <th>#</th>
+                                                <th>Data zamówienia</th>
                                                 <th>Imie i nazwisko</th>
                                                 <th>Telefon</th>
                                                 <th>Email</th>
@@ -66,6 +71,7 @@
                                         <tbody>
                                             <tr class="{{ $loop->index / 2 == 0 ? 'odd' : 'even' }}">
                                                 <td>{{ ($orders->currentPage() - 1) * $orders->count() + $loop->iteration }}</td>
+                                                <td>{{ $order->created_at }}</td>
                                                 <td>{{ $order->firstname }} {{ $order->lastname }}</td>
                                                 <td>{{ $order->telephone }}</td>
                                                 <td>{{ $order->email }}</td>
@@ -114,7 +120,7 @@
                                             </tr>
                                             @if (!$order->dishes->isEmpty())
                                             <tr>
-                                                <td colspan="12">
+                                                <td colspan="13">
                                                     <table class="table table-bordered table-hover table-dishes">
                                                         <thead>
                                                             <tr>
@@ -143,10 +149,17 @@
                                         </tbody>
                                         @endforeach
                                     </table>
+                                    @else
+                                    <span class="d-block text-center">
+                                        Brak zamówień
+                                    </span>
+                                    @endif
                                 </div>
                             </div>
                         </div>
-                        {{ $orders->links('vendor.pagination.bootstrap-5') }}
+                        @if ($orders->isNotEmpty())
+                        {{ $orders->links('vendor.pagination.bootstrap-5')}}
+                        @endif
                     </div>
 
                 </div>

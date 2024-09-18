@@ -24,8 +24,6 @@
     </div>
     @include('foundation.script', ['types' => 'admin'])
 
-    @include('foundation.alert')
-
     @vite('resources/js/menu.js')
     @yield('script')
 </body>

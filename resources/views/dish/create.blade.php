@@ -55,7 +55,7 @@
                     </div>
                     <div class="card-body">
                         <div id="wrapper" class="dataTables_wrapper dt-bootstrap4">
-                            <form action="{{ route('dish.store') }}" method="POST" id="dish_store_form">
+                            <form action="{{ route('dish.store') }}" method="POST" enctype="multipart/form-data" id="dish_store_form">
                                 @csrf
                                 <div class="row">
                                     <div class="col-sm-12 col-md-6"></div>
@@ -65,22 +65,37 @@
                                     <div class="col-sm-12">
                                         <div class="form-group">
                                             <label for="name">Wpisz nazwe</label>
-                                            <input type="text" class="form-control" id="name" placeholder="Wpisz nazwe" name="name">
+                                            <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" placeholder="Wpisz nazwe" name="name" value="{{ old('name') }}">
+                                            @error('name')
+                                            <div class="invalid-feedback">
+                                                {{ $message }}
+                                            </div>
+                                            @enderror
                                         </div>
                                         <div class="form-group">
                                             <label for="description">Wpisz opis</label>
-                                            <textarea class="form-control" id="description" placeholder="Wpisz opis" name="description"></textarea>
+                                            <textarea class="form-control @error('description') is-invalid @enderror" id="description" placeholder="Wpisz opis" name="description">{{ old('description') }}</textarea>
+                                            @error('description')
+                                            <div class="invalid-feedback">
+                                                {{ $message }}
+                                            </div>
+                                            @enderror
                                         </div>
                                         <div class="form-group">
                                             <label for="ingredients">Wpisz Składniki</label>
                                             <div class="ingredients">
                                                 <div class="input-group">
-                                                    <input type="text" class="form-control" id="ingredients" placeholder="Wpisz składnik" name="ingredients[]">
+                                                    <input type="text" class="form-control @error('ingredients') is-invalid @enderror" id="ingredients" placeholder="Wpisz składnik" name="ingredients[]">
                                                     <div class="input-group-btn">
                                                         <button class="btn btn-success" onclick="addIngredients()" type="button"><i class="fa fa-plus"></i></button>
                                                     </div>
                                                 </div>
                                             </div>
+                                            @error('ingredients')
+                                            <div class="invalid-feedback">
+                                                {{ $message }}
+                                            </div>
+                                            @enderror
                                         </div>
                                         <div class="form-group">
                                             <label for="category_id">Wybierz kategorie</label>
@@ -119,10 +134,15 @@
                                             </div>
                                         </div>
                                         <div class="form-group">
-                                            <label for="file">Wybierz Zdjęcie</label>
+                                            <label for="image">Wybierz Zdjęcie</label>
                                             <div class="input-group custom-file-button">
-                                                <input type="file" class="form-control" id="image" name="image">
+                                                <input type="file" class="form-control @error('image') is-invalid @enderror" id="image" name="image">
                                                 <label class="input-group-text" for="image">Wybierz plik</label>
+                                                @error('image')
+                                                <div class="invalid-feedback">
+                                                    {{ $message }}
+                                                </div>
+                                                @enderror
                                             </div>
                                         </div>
                                     </div>

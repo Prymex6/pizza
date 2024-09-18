@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Reservation;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 
 class ReservationController extends Controller
 {
@@ -31,6 +31,10 @@ class ReservationController extends Controller
      */
     public function store(Request $request)
     {
+        if (!$request->user_id) {
+            $request->merge(['user_id' => Auth::user()->id ?? null]);
+        }
+
         Reservation::create($request->all());
 
         if (in_array(session('previous_route'), ['home.index', 'home.reservation'])) {

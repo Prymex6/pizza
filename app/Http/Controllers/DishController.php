@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-
-use App\Models\Dish;
-use App\Models\Category;
 use App\Http\Requests\DishRequest;
+
+use App\Models\Category;
+use App\Models\Dish;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class DishController extends Controller
 {
@@ -41,7 +42,20 @@ class DishController extends Controller
             $request->merge(['price' => null]);
         }
 
-        $dish = Dish::create($request->all());
+        $data = [
+            'name'          => $request->name,
+            'description'   => $request->description,
+            'ingredients'   => $request->ingredients,
+            'category_id'   => $request->category_id,
+            'price'         => $request->price,
+        ];
+
+        if (!empty($request->image)) {
+            $path = $request->file('image')->store('dishes', 'public');
+            $data['image'] = $path;
+        }
+
+        $dish = Dish::create($data);
 
         if (!empty($request->sizes)) {
             $dish->sizes()->createMany($request->sizes);
@@ -94,7 +108,28 @@ class DishController extends Controller
             $request->merge(['price' => null]);
         }
 
-        $dish->update($request->all());
+        $data = [
+            'name'          => $request->name,
+            'description'   => $request->description,
+            'ingredients'   => $request->ingredients,
+            'category_id'   => $request->category_id,
+            'price'         => $request->price,
+        ];
+
+        if (empty($request->path)) {
+            $data['image'] = null;
+        }
+
+        if ($request->file('image')) {
+            $path = $request->file('image')->store('dishes', 'public');
+            $data['image'] = $path;
+        }
+
+        if ($dish->image && $dish->image != $data['image']) {
+            Storage::disk('public')->delete($dish->image);
+        }
+
+        $dish->update($data);
 
         if (!empty($request->sizes)) {
             $dish->sizes()->createMany($request->sizes);
