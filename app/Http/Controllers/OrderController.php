@@ -30,7 +30,7 @@ class OrderController extends Controller
         if (Gate::allows('admin')) {
             $orders = Order::orderBy('id', 'desc')->paginate(20);
         } else {
-            $orders = Auth::user()->orders ?? collect([]);
+            $orders = Auth::user()->orders()->paginate(20) ?? collect([]);
         }
 
         if ($orders) {

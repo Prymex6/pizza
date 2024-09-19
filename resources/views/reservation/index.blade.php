@@ -33,6 +33,7 @@
         <div class="row">
             <div class="col-12">
                 <div class="card">
+                    @can('admin')
                     <div class="card-header">
                         <div class="row">
                             <div class="col-sm-11"></div>
@@ -41,6 +42,7 @@
                             </div>
                         </div>
                     </div>
+                    @endcan
                     <div class="card-body">
                         <div id="wrapper" class="datatables_wrapper dt-bootstrap4">
                             <div class="row">
@@ -60,7 +62,9 @@
                                                 <th>Ilość osób</th>
                                                 <th>Data i Godzina</th>
                                                 <th>Status</th>
+                                                @can('admin')
                                                 <th>Akcja</th>
+                                                @endcan
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -81,7 +85,7 @@
                                                     @elseif ($reservation->status == 1)
                                                     <span class="text-success">Zaakceptowany</span>
                                                     @endif
-
+                                                    @can('admin')
                                                     <div>
                                                         @if ($reservation->status == null || $reservation->status == '0')
                                                         <form action="{{ route('reservation.status', $reservation->id) }}" method="post">
@@ -100,7 +104,9 @@
                                                         </form>
                                                         @endif
                                                     </div>
+                                                    @endcan
                                                 </td>
+                                                @can('admin')
                                                 <td>
                                                     <form action="{{ route('reservation.destroy', $reservation->id) }}" method="POST" onsubmit="return confirm('Czy na pewno chcesz usunąć ten rekord?');">
                                                         @csrf
@@ -109,6 +115,7 @@
                                                         <button type="submit" class="btn btn-sm btn-danger"><i class="fa fa-remove"></i></button>
                                                     </form>
                                                 </td>
+                                                @endcan
                                             </tr>
                                             @endforeach
                                         </tbody>

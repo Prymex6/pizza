@@ -64,7 +64,9 @@
                                                 <th>Sposób płatności</th>
                                                 <th>Uwagi</th>
                                                 <th>Status</th>
+                                                @can('admin')
                                                 <th>Akcje</th>
+                                                @endcan
                                             </tr>
                                         </thead>
                                         @endif
@@ -109,6 +111,7 @@
                                                 <td class="status" data-status_id="{{ $order->status_id }}" data-order_id="{{ $order->id }}">
                                                     @include('order.statuses', ['status_id' => $order->status_id])
                                                 </td>
+                                                @can('admin')
                                                 <td>
                                                     <form action="{{ route('order.destroy', $order->id) }}" method="POST" onsubmit="return confirm('Czy na pewno chcesz usunąć ten rekord?');">
                                                         @csrf
@@ -117,6 +120,7 @@
                                                         <button type="submit" class="btn btn-sm btn-danger"><i class="fa fa-remove"></i></button>
                                                     </form>
                                                 </td>
+                                                @endcan
                                             </tr>
                                             @if (!$order->dishes->isEmpty())
                                             <tr>
